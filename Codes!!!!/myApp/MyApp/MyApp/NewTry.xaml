@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage 
+    xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             x:Class="MyApp.NewTry">
+
+   
+         <AbsoluteLayout>
+            
+        <Image Source="http://lorempixel.com/1920/1080/nature/7" Aspect="AspectFill" />
+        <Label Text="Relax" AbsoluteLayout.LayoutBounds="0.5,0,100,100" AbsoluteLayout.LayoutFlags="PositionProportional" FontSize="30" />
+        <BoxView BackgroundColor="Black" Opacity ="0.5"  AbsoluteLayout.LayoutBounds="0,1,1,100" AbsoluteLayout.LayoutFlags="PositionProportional, WidthProportional"     />
+
+
+
+        <StackLayout Orientation="Horizontal" Padding="30, 0"
+			AbsoluteLayout.LayoutBounds="0, 1, 1, 100" AbsoluteLayout.LayoutFlags="PositionProportional, WidthProportional">
+            <Label  Text="Profile" HorizontalOptions="Center" VerticalOptions="Center" TextColor="White" FontSize="15" BackgroundColor="AliceBlue" />
+            <Label Text="Meditate" HorizontalOptions="CenterAndExpand" VerticalOptions="Center" TextColor="White" FontSize="15" BackgroundColor="Blue" />
+            <Label Text="Themes" HorizontalOptions="Center" VerticalOptions="Center" TextColor="White" FontSize="15" BackgroundColor="CadetBlue" />
+        </StackLayout>
+          
+        
+
+
+        </AbsoluteLayout>
+
+   
+   
+    
+    
+</ContentPage>

@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             x:Class="MyApp.FirstPage">
+    <StackLayout BindingContext="{Binding Source={x:Reference Slider}}" VerticalOptions="Center" HorizontalOptions="Center">
+<Button Text="next" Pressed="Button_OnPressed"></Button>
+
+            <Label 
+                      Text="{
+                Binding Value,
+                StringFormat='Value is {0:F2}'
+                }"
+ 
+                      
+
+            />
+
+            <Slider Minimum="0" Maximum="20"  x:Name="Slider" />
+            <Label x:Name="quotes" Scale="{Binding Value}" />
+        </StackLayout>
+   
+</ContentPage>

@@ -1,0 +1,82 @@
+.form-inline {
+    display: flex;
+    flex-flow: row wrap;
+    align-items: center;
+}
+
+
+/* Add some margins for each label */
+
+.form-inline label {
+    margin: 5px 10px 5px 0;
+}
+
+
+/* Style the input fields */
+
+.form-inline input {
+    vertical-align: middle;
+    margin: 5px 10px 5px 0;
+    padding: 10px;
+    background-color: rgba(223, 217, 217, 0.144);
+    border: 1px solid #ddd;
+}
+
+
+/* Style the submit button */
+
+.form-inline button:hover {
+    background-color: royalblue;
+}
+
+
+/* Add responsiveness - display the form controls vertically instead of horizontally on screens that are less than 800px wide */
+
+@media (max-width: 4000px) {
+    .form-inline input {
+        margin: 10px 0;
+    }
+    .form-inline {
+        flex-direction: column;
+        align-items: stretch;
+    }
+}
+
+
+/*  ^^^^^^^^^^^^*/
+
+.mid {
+    vertical-align: text-top;
+    text-align: center;
+    bottom: 10%;
+    position: relative;
+    vertical-align: top;
+}
+
+.HeadLine {
+    text-decoration: black;
+    letter-spacing: 1px;
+}
+
+body {
+    max-width: 3080px;
+    box-sizing: border-box;
+    margin: 10% 10% 10% 10%;
+    color: #000;
+    background: #fff;
+    padding: 10px;
+    box-shadow: 10px 10px 16px rgba(0, 0, 0, 0.5);
+    font-size: 11pt;
+    line-height: 0.75;
+}
+
+input {
+    box-shadow: 10px 10px 16px rgba(0, 0, 0, 0.5);
+    background-color: lightblue;
+    margin-bottom: 10px;
+}
+
+input {
+    box-shadow: 10px 10px 16px rgba(0, 0, 0, 0.5);
+    background-color: lavender;
+}

@@ -1,0 +1,147 @@
+body {
+    margin: 0;
+    line-height: 2;
+    text-align: center;
+    font-family: Orbitron;
+    background-color: rgb(95, 184, 90);
+    position: relative;
+}
+
+h1 {
+    font-size: 5.625rem;
+    color: rgb(25, 177, 177);
+    margin: 25px auto 0 auto;
+    font-family: 'Sacramento', cursive;
+}
+
+h2 {
+    color: rgb(31, 211, 211);
+    font-size: 2.5rem;
+    font-family: 'Monoton', cursive;
+}
+
+h3 {
+    color: rgb(0, 71, 119);
+    font-family: 'Orbitron', cursive;
+}
+
+a {
+    color: rgb(196, 31, 25);
+}
+
+table {
+    margin: auto;
+}
+
+.top-container {
+    padding-top: 100px;
+    background-color: rgb(23, 139, 101);
+    position: relative;
+}
+
+.middle-container {
+    background-color: rgb(95, 184, 90);
+}
+
+.sizeImg {
+    width: 200px;
+    height: auto;
+}
+
+.bottom-container {
+    background-color: rgb(95, 188, 91);
+}
+
+.left-cloud {
+    position: absolute;
+    left: 100px;
+    bottom: 500px;
+}
+
+.line {
+    width: 100%;
+}
+
+.redbutton {
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    border-radius: 20px;
+    height: 10px;
+    line-height: 10px;
+    color: rgb(0, 252, 210);
+    font-family: Open Sans;
+    width: 139px;
+    font-size: 20px;
+    font-weight: 900;
+    padding: 12px;
+    background-color: rgb(47, 151, 42);
+    box-shadow: 4px -2px 23px 3px rgb(18, 51, 16);
+    -webkit-box-shadow: 4px -2px 23px 8px rgb(9, 78, 6);
+    -moz-box-shadow: 4px -2px 53px 8px rgb(0, 0, 0);
+    text-shadow: 1px 1px 6px #48ff00;
+    border: solid rgb(7, 97, 47) 1px;
+    text-decoration: none;
+    display: inline-block;
+    cursor: pointer;
+    text-align: center;
+}
+
+.redbutton:hover {
+    border: solid rgb(7, 97, 47) 1px;
+    background: rgb(7, 97, 47);
+    color: rgb(0, 0, 0);
+    background-image: -webkit-linear-gradient(top, rgb(7, 97, 47), rgb(7, 97, 47));
+    background-image: -moz-linear-gradient(top, #811616, rgb(7, 97, 47));
+    background-image: -ms-linear-gradient(top, #811616, rgb(7, 97, 47));
+    background-image: -o-linear-gradient(top, #811616, rgb(7, 97, 47));
+    background-image: linear-gradient(to bottom, #811616, rgb(7, 97, 47));
+    -webkit-border-radius: 20px;
+    -moz-border-radius: 20px;
+    border-radius: 20px;
+    text-decoration: none;
+}
+
+.right-cloud {
+    position: absolute;
+    left: 700px;
+    bottom: 500px;
+}
+
+.bottom-cloud {
+    position: absolute;
+    left: 300px;
+    bottom: 300px;
+}
+
+.top-cloud {
+    position: absolute;
+    right: 300px;
+    text-align: left;
+    top: 50px;
+}
+
+.skill-row {
+    width: 50%;
+    margin: 100px auto 100px auto;
+    line-height: 2;
+    /* text-align: left; */
+}
+
+
+/* .imgleft {
+    float: left;
+    margin-right: 10px;
+} */
+
+#imgright {
+    float: left;
+    margin-left: 10px;
+}
+
+#logo {
+    font-weight: normal;
+}
+
+#MyThing {
+    color: #EAF6F6;
+}

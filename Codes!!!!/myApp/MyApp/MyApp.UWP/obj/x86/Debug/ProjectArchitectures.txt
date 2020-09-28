@@ -1,0 +1,1 @@
+C:\Users\daniel\Desktop\myApp\MyApp\MyApp.UWP\MyApp.UWP.csproj;x86

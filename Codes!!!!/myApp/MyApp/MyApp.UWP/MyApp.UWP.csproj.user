@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Source>C:\Users\daniel\source\repos\MyApp\MyApp\MyApp.UWP\clock.png</Source>
+    <SmallTileSource>C:\Users\daniel\source\repos\MyApp\MyApp\MyApp.UWP\clock.png</SmallTileSource>
+    <MediumTileSource>C:\Users\daniel\source\repos\MyApp\MyApp\MyApp.UWP\clock.png</MediumTileSource>
+    <WideTileSource>C:\Users\daniel\source\repos\MyApp\MyApp\MyApp.UWP\clock.png</WideTileSource>
+    <LargeTileSource>C:\Users\daniel\source\repos\MyApp\MyApp\MyApp.UWP\clock.png</LargeTileSource>
+    <AppIconSource>C:\Users\daniel\source\repos\MyApp\MyApp\MyApp.UWP\clock.png</AppIconSource>
+    <SplashScreenSource>C:\Users\daniel\source\repos\MyApp\MyApp\MyApp.UWP\clock.png</SplashScreenSource>
+    <PackageLogoSource>C:\Users\daniel\source\repos\MyApp\MyApp\MyApp.UWP\clock.png</PackageLogoSource>
+  </PropertyGroup>
+</Project>

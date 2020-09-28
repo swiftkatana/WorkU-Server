@@ -1,0 +1,16 @@
+.del{
+    position: absolute;
+    display: inline-block;
+    width: 200px;
+    height: 130px;
+    border: black 1px solid;
+    background-color: rgb(124, 14, 32);
+    box-shadow: 5px 4px 8px 0 rgba(0, 0, 
+    0, 0.2), 5px 3px 20px 0 rgba(0, 0, 0, 0.19);
+}
+#btn{
+margin: 19px;   
+}
+h3{
+    color: blue;
+}

@@ -1,0 +1,11 @@
+.videoShow{
+    padding: 50px;
+    border:2px solid #fff;
+    box-shadow: 0px 10px 10px 10px #ccc;
+    
+}
+.videoShow .description h1{
+    color: rgb(14, 15, 15);
+    padding: 5px;
+   
+}

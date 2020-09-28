@@ -1,0 +1,12 @@
+#map {
+    width: 1500px;
+    height: 1500px;
+    background-color: rgb(189, 178, 178);
+    position: relative;
+}
+
+.player {
+    width: 50px;
+    position: absolute;
+    height: 50px;
+}

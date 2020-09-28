@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage 
+    NavigationPage.HasNavigationBar="False"
+    Padding="10,20,10,10"
+    xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" xmlns:d="http://xamarin.com/schemas/2014/forms/design" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="d " x:Class="MyApp.Wellcome">
+
+    <StackLayout>
+      
+        <Label Text=" Wellcome to my App"  TextColor="CadetBlue"    HorizontalOptions="CenterAndExpand"  VerticalOptions="StartAndExpand" TextType="Text"    Scale="2"       />
+        <Button Text="I Dare You TO Press Me!!" Clicked="Button_Clicked" HorizontalOptions="Center" VerticalOptions="Center"/>
+        <Button Text=" Come IN!!..." Clicked="Button_OnPressed" VerticalOptions="EndAndExpand" HorizontalOptions="CenterAndExpand"/>
+    </StackLayout>
+    
+</ContentPage>

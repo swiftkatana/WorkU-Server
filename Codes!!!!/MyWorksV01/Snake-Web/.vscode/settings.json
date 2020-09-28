@@ -1,0 +1,9 @@
+{
+    "liveServer.settings.port": 5502,
+    "editor.renderWhitespace": "boundary",
+    "editor.cursorStyle": "line-thin",
+    "editor.minimap.size": "fit",
+    "explorer.incrementalNaming": "smart",
+    "workbench.iconTheme": "eq-material-theme-icons",
+    "workbench.editor.untitled.labelFormat": "name"
+}

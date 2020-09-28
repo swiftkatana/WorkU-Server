@@ -1,0 +1,42 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage   x:Name="imagess"
+    xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             x:Class="MyApp.NewList">
+    
+    <StackLayout  >
+      
+        <SearchBar Placeholder="search..." x:Name="searchBar" TextChanged="searchBar_TextChanged"/>
+        <Button Text="Add" Clicked="Button_Clicked" BackgroundColor="White" />
+        <ListView x:Name="listView"  
+                  IsGroupingEnabled="True"
+                  ItemSelected="listView_ItemSelected" 
+                  GroupDisplayBinding="{Binding Title}"
+                  >
+            
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <ViewCell  >
+                        <ViewCell.ContextActions>
+                            <MenuItem 
+								Text="Delete" 
+								IsDestructive="true" 
+								Clicked="OnDeleteClicked" 
+								CommandParameter="{Binding .}" />
+                        </ViewCell.ContextActions>
+                        <StackLayout Orientation="Horizontal">
+                            <Image Source="{Binding Image}"/>
+                            <Label Text="{Binding Name}" />
+                       
+                            <Label Text="{Binding Id}"  />
+                        </StackLayout>
+
+                    </ViewCell>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+    </StackLayout>
+</ContentPage>

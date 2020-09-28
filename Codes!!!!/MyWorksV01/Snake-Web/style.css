@@ -1,0 +1,103 @@
+#con {
+    margin-top: 10px;
+    width: 1000px;
+    height: 1000px;
+    background: 'white';
+    position: relative;
+    border: 10px groove brown;
+}
+
+#count {
+    margin-left: 45%;
+    margin-right: 45%;
+    background-color: aqua;
+    text-align: center;
+    box-shadow: black 10px;
+}
+
+.Monster {
+    width: 100px;
+    height: 100px;
+    position: absolute;
+    ;
+}
+
+.wall {
+    background-image: url("https://img.icons8.com/ios-filled/50/000000/brick-wall.png");
+}
+
+#icon {
+    background-color: black;
+    width: 10px;
+    height: 10p0x;
+}
+
+footer {
+    background-color: green;
+    margin-top: 100px;
+}
+
+.SnakeHead {
+    width: 20px;
+    height: 20px;
+    left: 500px;
+    top: 40px;
+    background-image: url('assets/img/snake.png');
+    background-repeat: no-repeat;
+    background-size: contain;
+    position: absolute;
+}
+
+.Body {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background-image: url('assets/img/body.png');
+}
+
+#fruitID {
+    height: 15px;
+    width: 15px;
+    position: absolute;
+    animation: shake 0.82s;
+    background-image: url('https://img.icons8.com/doodle/10/000000/cherry.png');
+    background-repeat: no-repeat;
+    background-size: contain;
+    animation-iteration-count: infinite;
+}
+
+@keyframes shake {
+    0% {
+        transform: translate(1px, 1px) rotate(0deg);
+    }
+    10% {
+        transform: translate(-1px, -2px) rotate(-1deg);
+    }
+    20% {
+        transform: translate(-3px, 0px) rotate(1deg);
+    }
+    30% {
+        transform: translate(3px, 2px) rotate(0deg);
+    }
+    40% {
+        transform: translate(1px, -1px) rotate(1deg);
+    }
+    50% {
+        transform: translate(-1px, 2px) rotate(-1deg);
+    }
+    60% {
+        transform: translate(-3px, 1px) rotate(0deg);
+    }
+    70% {
+        transform: translate(3px, 1px) rotate(-1deg);
+    }
+    80% {
+        transform: translate(-1px, -1px) rotate(1deg);
+    }
+    90% {
+        transform: translate(1px, 2px) rotate(0deg);
+    }
+    100% {
+        transform: translate(1px, -2px) rotate(-1deg);
+    }
+}

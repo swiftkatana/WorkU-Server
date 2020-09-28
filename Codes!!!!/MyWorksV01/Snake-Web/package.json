@@ -1,0 +1,24 @@
+{
+  "name": "snake-web",
+  "version": "1.0.0",
+  "description": "MY first Creation",
+  "main": "scripts.js",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
+    "ejs": "^3.0.1",
+    "express": "^4.17.1",
+    "http-server": "^0.12.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "keywords": [
+    "dog",
+    "reko"
+  ],
+  "author": "daniel levy",
+  "license": "ISC"
+}

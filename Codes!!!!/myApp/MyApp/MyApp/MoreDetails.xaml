@@ -1,0 +1,59 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage Title="{Binding Name}"
+    xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             x:Class="MyApp.MoreDetails" Padding="10,10,10,10" >
+    <AbsoluteLayout>
+        <Label Text="You Have To Fill Name and LastName at Leat" IsVisible="False" x:Name="Eror"/>
+        <TableView Intent="Form">
+        <TableRoot >
+            <TableSection >
+                <ViewCell >
+                    <StackLayout Orientation="Horizontal">
+                        <Label Text="Name:    " HorizontalOptions="Start"  WidthRequest="80" />
+                        <Entry Placeholder="Name" HorizontalOptions="Start" WidthRequest="200" x:Name="Name"  />
+                        
+                    </StackLayout>
+                    
+                </ViewCell>
+                <ViewCell>
+                    <StackLayout Orientation="Horizontal">
+                            <Label Text="LastName:" HorizontalOptions="Start" WidthRequest="80" />
+                        <Entry Placeholder="LastName" HorizontalOptions="Start" WidthRequest="200" x:Name="lastName" />
+                    </StackLayout>
+                </ViewCell>
+                    <ViewCell  >
+                        <StackLayout Orientation="Horizontal">
+                            <Label Text="Email:" HorizontalOptions="Start" WidthRequest="80" />
+                            <Entry Placeholder="Email" HorizontalOptions="Start" WidthRequest="200" x:Name="Email" />
+                        </StackLayout>
+                    </ViewCell>
+                    <ViewCell>
+                        <StackLayout Orientation="Horizontal">
+                            <Label Text="what do you think:" HorizontalOptions="Start" WidthRequest="80" />
+                            <Entry Placeholder="what do you think" HorizontalOptions="Start" WidthRequest="200" x:Name="Stutus" />
+                        </StackLayout>
+                    </ViewCell>
+                    <ViewCell>
+                        <StackLayout Orientation="Horizontal">
+                            <Label Text="Phone:" HorizontalOptions="Start" WidthRequest="80" />
+                            <Entry Placeholder="Phone" HorizontalOptions="Start" WidthRequest="200" x:Name="Phone" />
+                        </StackLayout>
+                    </ViewCell>
+                    <ViewCell>
+                        <StackLayout Orientation="Horizontal">
+                            <Label Text="Date of Born:" HorizontalOptions="Start" WidthRequest="80" />
+                            <DatePicker  HorizontalOptions="Start" WidthRequest="300" x:Name="Date" />
+                        </StackLayout>
+                    </ViewCell>
+                </TableSection>
+        </TableRoot>
+    </TableView>
+        <Button  Clicked="Button_Clicked" AbsoluteLayout.LayoutBounds="0.5,1,0.5,0.1" AbsoluteLayout.LayoutFlags="All" x:Name="SaveCreate" />
+    </AbsoluteLayout>
+   
+
+</ContentPage>

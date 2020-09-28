@@ -1,0 +1,44 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             x:Class="MyApp.GridPhone"
+            
+             >
+   <StackLayout BackgroundColor="Olive"  >
+       <Label x:Name="numberCall" HorizontalOptions="Center" VerticalOptions="Start" Padding="0,100,0,100"/>
+       <Grid HorizontalOptions="Center">
+<Grid.ColumnDefinitions >
+<ColumnDefinition Width="Auto" />
+<ColumnDefinition Width="Auto" />
+<ColumnDefinition Width="Auto" /> 
+<ColumnDefinition Width="Auto" />
+<ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+           <Grid.RowDefinitions>
+               <RowDefinition Height="Auto" />
+               <RowDefinition Height="Auto" />
+               <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+               <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <Button  Text="1" Grid.Column="0" Grid.Row="0" FontSize="30" TextColor="Gray" BackgroundColor="Bisque" BorderRadius="30" Pressed="_1_OnPressed"/>
+            <Button  Text="2"  Grid.Column="1" Grid.Row="0" FontSize="30" TextColor="Gray" BackgroundColor="Bisque" BorderRadius="30" Pressed="_2_OnPressed"/>
+            <Button   Text="3" Grid.Column="2" Grid.Row="0" FontSize="30" TextColor="Gray" BackgroundColor="Bisque" BorderRadius="30" Pressed="_3_OnPressed"/>
+            <Button  Text="4" Grid.Column="0" Grid.Row="1" FontSize="30" TextColor="Gray" BackgroundColor="Bisque" BorderRadius="30" Pressed="_4_OnPressed"/>
+            <Button  Text="5" Grid.Column="1" Grid.Row="1" FontSize="30" TextColor="Gray" BackgroundColor="Bisque" BorderRadius="30" Pressed="_5_OnPressed"/>
+            <Button Text="6" Grid.Column="2" Grid.Row="1" FontSize="30" TextColor="Gray" BackgroundColor="Bisque" BorderRadius="30" Pressed="_6_OnPressed"/>
+            <Button Text="7" Grid.Column="0" Grid.Row="2" FontSize="30" TextColor="Gray" BackgroundColor="Bisque" BorderRadius="30" Pressed="_7_OnPressed"/>
+            <Button   Text="8" Grid.Column="1" Grid.Row="2" FontSize="30" TextColor="Gray" BackgroundColor="Bisque" BorderRadius="30" Pressed="_8_OnPressed"/>
+            <Button Text="9" Grid.Column="2" Grid.Row="2" FontSize="30" TextColor="Gray" BackgroundColor="Bisque" BorderRadius="30" Pressed="_9_OnPressed"/>
+            <Button  Text="0" Grid.Column="1" Grid.Row="3" FontSize="30" TextColor="Gray" BackgroundColor="Bisque" BorderRadius="30" Pressed="_0_OnPressed"/>
+            <Button  Text="0" Grid.Column="1" Grid.Row="3" FontSize="30" TextColor="Gray" BackgroundColor="Bisque" BorderRadius="30" Pressed="_0_OnPressed"/>
+           
+        </Grid>
+       <Button  Text="Dial"    FontSize="30" TextColor="Gray" BackgroundColor="GreenYellow" BorderRadius="30" Pressed="_Dial_OnPressed"/>
+    </StackLayout>
+       
+    
+</ContentPage>

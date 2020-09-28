@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage Padding="0,0,0,0"
+    xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             x:Class="MyApp.NewTry1">
+
+    <RelativeLayout>
+        <Image  x:Name="boboImage"/>
+        <StackLayout  HorizontalOptions="Center"  RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent ,Property=Width, Factor=1}"
+            >
+             <Label Text="$11.95"   TextColor="#33353a" FontSize="60" FontAttributes="Bold"/>
+            <Button Text="Add ewyhrw4re" CornerRadius="15"  FontSize="15" FontAttributes="Bold" HeightRequest="30"/>
+
+        </StackLayout>
+        <StackLayout RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToView, ElementName= Banner ,Property=Height, Factor=1 ,Constant=30}"
+                     RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent ,Property=Width, Factor=1}" >
+            <Label Text="why dastgyeayh hrst" FontSize="Title" FontAttributes="Bold" HorizontalOptions="Center" />
+            <Label HorizontalOptions="Center">
+                tjhtejtrejedtj etrujhetrujhewt5ruj etujet5u
+            </Label>
+        </StackLayout>
+       
+    </RelativeLayout>
+</ContentPage>

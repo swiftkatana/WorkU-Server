@@ -1,0 +1,16 @@
+C:\Users\daniel\source\repos\MyApp\MyApp\MyApp\bin\Release\netstandard2.0\MyApp.deps.json
+C:\Users\daniel\source\repos\MyApp\MyApp\MyApp\bin\Release\netstandard2.0\MyApp.dll
+C:\Users\daniel\source\repos\MyApp\MyApp\MyApp\bin\Release\netstandard2.0\ref\MyApp.dll
+C:\Users\daniel\source\repos\MyApp\MyApp\MyApp\bin\Release\netstandard2.0\MyApp.pdb
+C:\Users\daniel\source\repos\MyApp\MyApp\MyApp\obj\Release\netstandard2.0\MyApp.csprojAssemblyReference.cache
+C:\Users\daniel\source\repos\MyApp\MyApp\MyApp\obj\Release\netstandard2.0\App.xaml.g.cs
+C:\Users\daniel\source\repos\MyApp\MyApp\MyApp\obj\Release\netstandard2.0\FirstPage.xaml.g.cs
+C:\Users\daniel\source\repos\MyApp\MyApp\MyApp\obj\Release\netstandard2.0\GridPhone.xaml.g.cs
+C:\Users\daniel\source\repos\MyApp\MyApp\MyApp\obj\Release\netstandard2.0\NewTry.xaml.g.cs
+C:\Users\daniel\source\repos\MyApp\MyApp\MyApp\obj\Release\netstandard2.0\Wellcome.xaml.g.cs
+C:\Users\daniel\source\repos\MyApp\MyApp\MyApp\obj\Release\netstandard2.0\MyApp.AssemblyInfoInputs.cache
+C:\Users\daniel\source\repos\MyApp\MyApp\MyApp\obj\Release\netstandard2.0\MyApp.AssemblyInfo.cs
+C:\Users\daniel\source\repos\MyApp\MyApp\MyApp\obj\Release\netstandard2.0\XamlC.stamp
+C:\Users\daniel\source\repos\MyApp\MyApp\MyApp\obj\Release\netstandard2.0\MyApp.dll
+C:\Users\daniel\source\repos\MyApp\MyApp\MyApp\obj\Release\netstandard2.0\ref\MyApp.dll
+C:\Users\daniel\source\repos\MyApp\MyApp\MyApp\obj\Release\netstandard2.0\MyApp.pdb

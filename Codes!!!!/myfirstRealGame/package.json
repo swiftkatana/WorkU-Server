@@ -1,0 +1,17 @@
+{
+  "name": "myfirstrealgame",
+  "version": "1.0.0",
+  "description": "boglo boglo",
+  "main": "server.js",
+  "dependencies": {
+    "express": "^4.17.1",
+    "mongoose": "^5.9.9",
+    "phaser": "^3.22.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "daniel",
+  "license": "ISC"
+}

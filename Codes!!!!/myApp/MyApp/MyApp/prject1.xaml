@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             x:Class="MyApp.prject1"
+             Padding="40"   >
+
+    <StackLayout>
+   
+       
+        <TableView Intent="Menu">
+            <TableRoot>
+                <TableSection Title=" Create new user">
+                    <EntryCell x:Name="UserName" Label=" UserName" Placeholder="UserName"  />
+                    <EntryCell x:Name="Password" Label="Password" Placeholder="Password" Completed="Password_Completed" />
+                    
+                </TableSection>
+            </TableRoot>
+        </TableView>
+        <Button Text="done" Clicked="Button_Clicked"  x:Name="button"/>
+    </StackLayout>
+</ContentPage>

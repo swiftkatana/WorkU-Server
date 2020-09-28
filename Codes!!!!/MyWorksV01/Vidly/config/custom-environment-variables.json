@@ -1,0 +1,5 @@
+{
+    "jwtPrivateKey": "vidly_jwtPrivteKey",
+    "MONGO_URI": "db",
+    "Port": "port"
+}

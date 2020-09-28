@@ -1,0 +1,19 @@
+#Maindiv{
+    width: auto;
+    height: auto;
+}
+#stuff{
+    margin: 10% 20% 20% 20%;
+    box-sizing: border-box;
+    color: #000;
+    background: #fff;
+    box-shadow: 0px 5px 36px rgba(0, 0, 0, 0.5);
+}
+
+#Send{
+    align-content: center;
+  
+}
+#MainH1{
+    color: aqua;
+}
