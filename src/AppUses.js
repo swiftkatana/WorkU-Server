@@ -1,5 +1,3 @@
-const { requestChecker } = require("./models/User");
-
 module.exports = (app) => {
   const express = require("express");
   const bodyParser = require("body-parser");
