@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-
+const { TaskSchema } = require("./Task");
 const userSchema = new mongoose.Schema({
   email: { type: String, required: true, index: true, unique: true },
   password: { type: String, required: true },
@@ -21,7 +21,7 @@ const userSchema = new mongoose.Schema({
     default: { name: "none", status: "" },
   },
   tasks: {
-    type: {},
+    type: { TaskSchema },
     default: {},
   },
 });

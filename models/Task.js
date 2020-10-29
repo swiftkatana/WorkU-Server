@@ -9,3 +9,5 @@ const TaskSchema = new mongoose.Schema({
     default: {},
   },
 });
+
+module.exports.TaskSchema = TaskSchema;
