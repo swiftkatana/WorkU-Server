@@ -25,6 +25,7 @@ router.post("/login", (req, res) => {
           imageProfile,
           company,
           role,
+          fullName,
         } = user;
         if (req.users[email]) {
           res.send({ err: "alreadyLogin" });
@@ -48,6 +49,7 @@ router.post("/login", (req, res) => {
                   lastName,
                   imageProfile,
                   company,
+                  fullName,
                   DOYBC: user.createDateOfUser,
                 });
               } else {
@@ -88,7 +90,7 @@ router.post("/register", (req, res) => {
       firstName,
       lastName,
     });
-    const { _id, imageProfile, tasks, role, company } = user;
+    const { _id, imageProfile, tasks, role, company, fullName } = user;
 
     user.save((err) => {
       if (err) {
@@ -105,6 +107,7 @@ router.post("/register", (req, res) => {
           id: _id,
           firstName,
           lastName,
+          fullName,
           imageProfile,
           tasks,
           company,

@@ -8,8 +8,8 @@ const userSchema = new mongoose.Schema({
     default: "default",
   },
   createDateOfUser: { type: Date, default: Date.now },
-  firstName: { type: String },
-  lastName: { type: String },
+  firstName: String,
+  lastName: String,
   phone: String,
   address: String,
   imageProfile: {
@@ -24,6 +24,9 @@ const userSchema = new mongoose.Schema({
     type: {},
     default: {},
   },
+});
+userSchema.virtual("fullName").get(function () {
+  return this.firstName + " " + this.lastName;
 });
 exports.userSchema = userSchema;
 const User = mongoose.model("Users", userSchema);
