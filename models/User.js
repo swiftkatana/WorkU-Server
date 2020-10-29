@@ -24,6 +24,10 @@ const userSchema = new mongoose.Schema({
     type: { TaskSchema },
     default: {},
   },
+  permission: {
+    type: [],
+    default: ["basic"],
+  },
 });
 userSchema.virtual("fullName").get(function () {
   return this.firstName + " " + this.lastName;

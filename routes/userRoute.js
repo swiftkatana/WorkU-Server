@@ -26,6 +26,7 @@ router.post("/login", (req, res) => {
           company,
           role,
           fullName,
+          permission,
         } = user;
         if (req.users[email]) {
           res.send({ err: "alreadyLogin" });
@@ -42,6 +43,7 @@ router.post("/login", (req, res) => {
               if (login) {
                 looger("someone login to our web sucssesfull email: " + email);
                 res.send({
+                  permission,
                   role,
                   email,
                   id: _id,
@@ -73,8 +75,17 @@ router.post("/login", (req, res) => {
   });
 });
 
-router.post("/register", (req, res) => {
-  const { email, password, firstName, lastName, companyName } = req.body;
+router.post("/register", async (req, res) => {
+  const {
+    email,
+    password,
+    firstName,
+    lastName,
+    companyName,
+    permission,
+  } = req.body;
+  let creator = permission.indexOf("creator") >= 0;
+
   looger(req.ip + " just enter our register  page ");
   bcrypt.hash(password, saltPassword, (err, hash) => {
     if (err) {
@@ -82,39 +93,59 @@ router.post("/register", (req, res) => {
       res.send(err.message);
       res.status(404);
     }
-
+    //if its creator make sure that its really the first one on this company
+    if (creator) {
+      console.log("someone signin as cretor");
+      Com;
+    }
     const user = new User({
       email,
-      company: { name: companyName, status: "waiting" },
+      company: {
+        name: companyName,
+        status: creator ? "accept" : "waiting",
+      },
       password: hash,
       firstName,
       lastName,
     });
-    const { _id, imageProfile, tasks, role, company, fullName } = user;
+    permission ? user.permission.push(...permission) : null;
+    {
+      const {
+        _id,
+        imageProfile,
+        tasks,
+        role,
+        company,
+        fullName,
+        permission,
+      } = user;
 
-    user.save((err) => {
-      if (err) {
-        looger("someone try to register but got error : " + err);
-        if (err.code === 11000) {
-          res.send("dup");
-          res.status(400);
-          res.end();
-        } else res.send(err.message);
-      } else {
-        looger("someone register to our web now this email : " + email);
-        res.send({
-          email,
-          id: _id,
-          firstName,
-          lastName,
-          fullName,
-          imageProfile,
-          tasks,
-          company,
-          DOYBC: user.createDateOfUser,
-        });
-      }
-    });
+      user.save((err) => {
+        if (err) {
+          looger("someone try to register but got error : " + err);
+          if (err.code === 11000) {
+            res.send("dup");
+            res.status(400);
+            res.end();
+          } else res.send(err.message);
+        } else {
+          looger("someone register to our web now this email : " + email);
+          res.send({
+            role,
+            email,
+            id: _id,
+            firstName,
+            lastName,
+            fullName,
+            imageProfile,
+            tasks,
+            company,
+            permission,
+            DOYBC: user.createDateOfUser,
+          });
+        }
+      });
+    }
   });
 });
 
