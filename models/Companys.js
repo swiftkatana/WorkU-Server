@@ -1,9 +1,11 @@
-const { Schema, Model } = require("mongoose");
+const mongoose = require("mongoose");
 
-const companySchema = new Schema({
+const companySchema = new mongoose.Schema({
   name: {
     type: String,
     required: true,
+    index: true,
+    unique: true,
   },
   waitListEmployees: {
     type: [],
@@ -15,9 +17,9 @@ const companySchema = new Schema({
     default: {},
   },
 });
-company.method.waitingList = function () {
+companySchema.method.waitingList = function () {
   return this.waitListEmployees.length;
 };
-module.exports.companySchema = companySchema;
+exports.companySchema = companySchema;
 
-module.exports.Company = new Model("company", companySchema);
+exports.Company = new mongoose.model("company", companySchema);

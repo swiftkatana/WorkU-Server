@@ -25,8 +25,8 @@ const userSchema = new mongoose.Schema({
     default: {},
   },
   permission: {
-    type: [],
-    default: ["basic"],
+    type: {},
+    default: {},
   },
 });
 userSchema.virtual("fullName").get(function () {
