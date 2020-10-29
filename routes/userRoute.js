@@ -23,7 +23,8 @@ router.post("/login", (req, res) => {
           firstName,
           lastName,
           imageProfile,
-          connections,
+          company,
+          role,
         } = user;
         if (req.users[email]) {
           res.send({ err: "alreadyLogin" });
@@ -40,12 +41,13 @@ router.post("/login", (req, res) => {
               if (login) {
                 looger("someone login to our web sucssesfull email: " + email);
                 res.send({
+                  role,
                   email,
-                  _id,
+                  id: _id,
                   firstName,
                   lastName,
                   imageProfile,
-                  friends: connections,
+                  company,
                   DOYBC: user.createDateOfUser,
                 });
               } else {
@@ -81,13 +83,12 @@ router.post("/register", (req, res) => {
 
     const user = new User({
       email,
-      companyName,
+      company: { name: companyName, status: "waiting" },
       password: hash,
       firstName,
       lastName,
-      role: req.body.role,
     });
-    const { _id, imageProfile, connections, tasks, role } = user;
+    const { _id, imageProfile, tasks, role, company } = user;
 
     user.save((err) => {
       if (err) {
@@ -101,13 +102,12 @@ router.post("/register", (req, res) => {
         looger("someone register to our web now this email : " + email);
         res.send({
           email,
-          role,
           id: _id,
           firstName,
           lastName,
           imageProfile,
           tasks,
-          connections,
+          company,
           DOYBC: user.createDateOfUser,
         });
       }
@@ -115,4 +115,27 @@ router.post("/register", (req, res) => {
   });
 });
 
+router.delete("/delete", (req, res) => {
+  //need to get in the req body a 2 things unique _id and is password
+  const { password, email } = req.body;
+
+  User.findOne({ email: email }, (err, user) => {
+    if (err || !user) {
+      looger(err);
+      res.send({ err: err || "useNotFound" });
+      res.status(404);
+    } else {
+      bcrypt.compare(password, user.password, (err, login) => {
+        if (err || !login) {
+          looger("password not right\n" + err);
+          res.send({ err: "WorngPassword" });
+          res.status(404);
+        } else {
+          user.remove();
+          res.send("success");
+        }
+      });
+    }
+  });
+});
 module.exports = router;

@@ -4,8 +4,8 @@ const userSchema = new mongoose.Schema({
   email: { type: String, required: true, index: true, unique: true },
   password: { type: String, required: true },
   role: {
-    type: {},
-    default: { role: "worker", status: "waiting" },
+    type: String,
+    default: "default",
   },
   createDateOfUser: { type: Date, default: Date.now },
   firstName: { type: String },
@@ -14,7 +14,7 @@ const userSchema = new mongoose.Schema({
   address: String,
   imageProfile: {
     type: String,
-    default: process.env.SERVER_IP + "public/images/defaultProfile.png",
+    default: process.env.SERVER_IP + "images/defaultProfile.png",
   },
   company: {
     type: {},
@@ -24,7 +24,6 @@ const userSchema = new mongoose.Schema({
     type: {},
     default: {},
   },
-  connections: { type: {}, default: {} },
 });
 exports.userSchema = userSchema;
 const User = mongoose.model("Users", userSchema);

@@ -2,7 +2,7 @@ module.exports = (app) => {
   const express = require("express");
   const bodyParser = require("body-parser");
 
-  app.use(express.static("uploads"));
+  app.use(express.static("public"));
   app.use(express.json());
   app.use(bodyParser.urlencoded({ extended: true }));
   app.use(function (req, res, next) {

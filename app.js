@@ -18,13 +18,16 @@ mongoose.connect(
 );
 
 //static files and MiddleWare
-require("./src/AppUses")(app);
+require("./src/Middlewares")(app);
+
+//socket
+const users = {};
 
 //Routs
 app.use(
   "/api/user",
   (req, res, next) => {
-    req.users = {};
+    req.users = users;
     next();
   },
   userRoute
