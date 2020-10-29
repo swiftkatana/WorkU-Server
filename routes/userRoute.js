@@ -2,17 +2,19 @@ const express = require("express");
 const bcrypt = require("bcrypt");
 
 const { User } = require("../models/User");
+const looger = require("../src/looger");
 
 const saltPassword = 10;
-const app = express.Router();
+const router = express.Router();
 
-app.post("/login", (req, res) => {
-  const { email, password, firstName, lastName } = req.body;
+router.post("/login", (req, res) => {
+  const { email, password } = req.body;
 
   User.findOne({ email: email }, (err, user) => {
     if (err) {
-      console.log(err);
+      looger(err);
       res.send({ err: "InfoWrong" });
+      res.status(404);
     } else {
       if (user) {
         const {
@@ -25,17 +27,18 @@ app.post("/login", (req, res) => {
         } = user;
         if (req.users[email]) {
           res.send({ err: "alreadyLogin" });
+          res.status(404);
+
           res.end();
         } else {
           bcrypt.compare(password, user.password, (err, login) => {
             if (err) {
-              console.log("password not right\n" + err);
+              looger("password not right\n" + err);
               res.send({ err: "InfoWrong" });
+              res.status(404);
             } else {
               if (login) {
-                console.log(
-                  "someone login to our web sucssesfull email: " + email
-                );
+                looger("someone login to our web sucssesfull email: " + email);
                 res.send({
                   email,
                   _id,
@@ -46,60 +49,70 @@ app.post("/login", (req, res) => {
                   DOYBC: user.createDateOfUser,
                 });
               } else {
-                console.log(
+                looger(
                   req.ip +
                     " just try login but not! password not good  :  " +
                     email
                 );
                 res.send({ err: "InfoWrong" });
+                res.status(404);
               }
             }
           });
         }
       } else {
-        console.log(
-          req.ip + " just try login but not! user not Found :  " + email
-        );
+        looger(req.ip + " just try login but not! user not Found :  " + email);
         res.send({ err: "userNotCreate" });
+        res.status(404);
       }
     }
   });
 });
 
-app.post("/register", (req, res) => {
-  const { email, password, firstName, lastName } = req.body;
-  console.log(req.ip + " just enter our register  page ");
+router.post("/register", (req, res) => {
+  const { email, password, firstName, lastName, companyName } = req.body;
+  looger(req.ip + " just enter our register  page ");
   bcrypt.hash(password, saltPassword, (err, hash) => {
     if (err) {
-      console.log(err);
+      looger(err);
       res.send(err.message);
+      res.status(404);
     }
 
     const user = new User({
       email,
+      companyName,
       password: hash,
       firstName,
       lastName,
+      role: req.body.role,
     });
-    const { _id, imageProfile, connections } = user;
+    const { _id, imageProfile, connections, tasks, role } = user;
 
     user.save((err) => {
       if (err) {
-        console.log("someone try to register but got error : " + err);
-        if (err.code === 11000) res.send("dup");
-        else res.send(err.message);
+        looger("someone try to register but got error : " + err);
+        if (err.code === 11000) {
+          res.send("dup");
+          res.status(400);
+          res.end();
+        } else res.send(err.message);
       } else {
-        console.log("someone register to our web now this email : " + email);
+        looger("someone register to our web now this email : " + email);
         res.send({
           email,
-          _id,
+          role,
+          id: _id,
           firstName,
           lastName,
           imageProfile,
-          friends: connections,
+          tasks,
+          connections,
           DOYBC: user.createDateOfUser,
         });
       }
     });
   });
 });
+
+module.exports = router;
