@@ -4,7 +4,7 @@ const server = require("http").createServer(app);
 const io = require("socket.io")(server);
 const mongoose = require("mongoose");
 const userRoute = require("./routes/userRoute");
-
+console.log('-----------------------------------------------------------------------------------')
 // set DB
 mongoose.set("useNewUrlParser", true);
 mongoose.set("useFindAndModify", false);
@@ -35,7 +35,6 @@ app.use(
 // setup server to listen
 
 const PORT = process.env.PORT || 1029;
-console.clear();
 server.listen(PORT, () => {
   console.log(`Server  listen to port ${PORT} `);
 });

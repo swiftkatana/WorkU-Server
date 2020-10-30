@@ -21,8 +21,8 @@ const userSchema = new mongoose.Schema({
     default: { name: "none", status: "" },
   },
   tasks: {
-    type: { TaskSchema },
-    default: {},
+    type: [],
+    default: [],
   },
   permission: {
     type: {},
