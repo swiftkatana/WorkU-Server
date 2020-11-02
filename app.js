@@ -34,7 +34,7 @@ app.use(
   userRoute
 );
 // setup server to listen
-
+console.clear()
 const PORT = process.env.PORT || 1029;
 server.listen(PORT, () => {
   console.log(`Server  listen to port ${PORT} `);

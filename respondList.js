@@ -1,4 +1,4 @@
-export default {
+const responedList = {
     DBError: { err: 'DBError' },
     InfoUnvalid: { err: 'InfoUnvalid' },
     route: { err: 'koral | Michael you send me bad request! ' },
@@ -9,4 +9,9 @@ export default {
     companyNameExists: { err: "companyNameExists" },
     UnvalidPassword: { err: 'UnvalidPassword' },
     usersNotFound: { err: 'usersNotFound' },
+    good: { valid: 'good' },
+    emailNotExistsL: { err: 'emailIsFake' }
+
 }
+
+exports.responedList = responedList
