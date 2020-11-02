@@ -1,6 +1,6 @@
 const express = require("express");
 const bcrypt = require("bcrypt");
-const legit = require('legit').;
+const legit = require('legit');
 
 const { User } = require("../models/User");
 const loger = require("../src/looger");
