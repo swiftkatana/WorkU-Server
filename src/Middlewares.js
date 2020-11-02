@@ -18,4 +18,14 @@ module.exports = (app) => {
     res.header("Access-Control-Allow-Credentials", true);
     next();
   });
+  //error check 
+  app.use('/api/user/addTask', (req, res, next) => {
+    if (!req.body.workers || !req.body.sender || !req.body.title) {
+      next("didnt find users on the add new Task Route");
+      res.status(404).send(errorList.InfoUnvalid);
+      return;
+    }
+    next();
+  })
 };
+

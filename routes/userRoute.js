@@ -4,6 +4,7 @@ const bcrypt = require("bcrypt");
 const { User } = require("../models/User");
 const loger = require("../src/looger");
 const { Company, addEmployeeToWaitingList } = require("../models/Companys");
+const { default: errorList } = require("../errorList");
 
 const saltPassword = 10;
 const router = express.Router();
@@ -11,15 +12,18 @@ const router = express.Router();
 router.post("/login", (req, res, next) => {
   const { email, password } = req.body;
   if (!email || !password) {
-    res.status(404).send('MissInfo');
+    res.status(404).send(errorList.InfoUnvalid);
     next('miss info been send to the register api');
     return;
   }
-
+  if (req.users[email]) {
+    res.status(400).send(errorList.loginFaildAlreadyConnect);
+    return;
+  }
   User.findOne({ email: email }, (err, user) => {
     if (err) {
       next(err);
-      res.status(403).send({ err: "InfoWrong" });
+      res.status(403).send(errorList.InfoUnvalid);
 
     } else {
       if (user) {
@@ -34,46 +38,43 @@ router.post("/login", (req, res, next) => {
           fullName,
           permission,
         } = user;
-        if (req.users[email]) {
-          res.status(400).send({ err: "alreadyLogin" });
-          return;
-        } else {
-          bcrypt.compare(password, user.password, (err, login) => {
-            if (err) {
-              next("password not right\n" + err);
-              res.status(400).send({ err: "InfoWrong" });
 
+        bcrypt.compare(password, user.password, (err, login) => {
+          if (err) {
+            next("password not right\n" + err);
+            res.status(400).send(errorList.Info);
+
+          } else {
+            if (login) {
+              req.users[email] = email;
+              loger("someone login to our web sucssesfull email: " + email);
+              res.status(200).send({
+                permission,
+                role,
+                email,
+                id: _id,
+                firstName,
+                lastName,
+                imageProfile,
+                company,
+                fullName,
+                DOYBC: user.createDateOfUser,
+              });
             } else {
-              if (login) {
-                req.users[email] = email;
-                loger("someone login to our web sucssesfull email: " + email);
-                res.status(200).send({
-                  permission,
-                  role,
-                  email,
-                  id: _id,
-                  firstName,
-                  lastName,
-                  imageProfile,
-                  company,
-                  fullName,
-                  DOYBC: user.createDateOfUser,
-                });
-              } else {
-                next(
-                  req.ip +
-                  " just try login but not! password not good  :  " +
-                  email
-                );
-                res.status(400).send({ err: "InfoWrong" });
+              next(
+                req.ip +
+                " just try login but not! password not good  :  " +
+                email
+              );
+              res.status(400).send(errorList.InfoUnvalid);
 
-              }
             }
-          });
-        }
+          }
+        });
+
       } else {
         next(req.ip + " just try login but not! user not Found :  " + email);
-        res.status(404).send({ err: "userNotCreate" });
+        res.status(404).send(errorList.UserNotCreated);
 
       }
     }
@@ -83,7 +84,7 @@ router.post("/login", (req, res, next) => {
 router.post("/register", async (req, res, next) => {
   const { email, password, firstName, lastName, companyName, permission, } = req.body;
   if (!email || !password || !firstName || !lastName || !companyName || !permission) {
-    res.status(404).send('MissInfo');
+    res.status(404).send(errorList.InfoUnvalid);
     next('miss info been send to the register api');
     return;
   }
@@ -102,7 +103,7 @@ router.post("/register", async (req, res, next) => {
       // so in the end its will make sure that all is been save 
       newcompany = newcompanyy;
     } else {
-      res.status(403).send("companyNameIsInUse");
+      res.status(403).send(errorList.companyNameExists);
       next('companyNameIsInUse')
       return;
     }
@@ -110,8 +111,8 @@ router.post("/register", async (req, res, next) => {
   bcrypt.hash(password, saltPassword, async (err, hash) => {
 
     if (err) {
-      res.status(403).send(err.message);
-      next(err);
+      res.status(403).send(errorList.UnvalidPassword);
+      next("err on register" + err);
       return;
     }
 
@@ -143,7 +144,7 @@ router.post("/register", async (req, res, next) => {
       if (newcompany) {
         newcompany.save((err) => {
           if (err) {
-            res.status(404).send("cantSave");
+            res.status(404).send(errorList.FaildSave);
 
             next("someone try to register but got error : " + err);
             return;
@@ -154,7 +155,7 @@ router.post("/register", async (req, res, next) => {
         const data = await addEmployeeToWaitingList(companyName, user);
         if (data.err || data.message) {
           console.log('error on add a new employee to a copany', data);
-          res.send('DBerror');
+          res.send(errorList.DBError);
           return;
         } else {
 
@@ -162,7 +163,7 @@ router.post("/register", async (req, res, next) => {
           newWaitingList.save(err => {
             if (err) {
               console.log('error on add a new employee to a copany', err);
-              res.send('DBerror');
+              res.send(errorList.DBError);
               return;
             }
           });
@@ -170,7 +171,7 @@ router.post("/register", async (req, res, next) => {
       }
       user.save((err) => {
         if (err) {
-          err.code === 11000 ? res.status(400).send("UserAlreadyExists") : res.status(404).send("cantSave");
+          err.code === 11000 ? res.status(400).send("UserAlreadyExists") : res.status(404).send(errorList.FaildSave);
           next("someone try to register but got error : " + err);
           newWaitingList ? newWaitingList.delete() : null
           newcompany ? newcompany.delete() : null
@@ -202,20 +203,20 @@ router.delete("/delete", async (req, res, next) => {
 
   User.findOne({ email: email }, (err, user) => {
     if (err || !user) {
-      res.status(403).send({ err: err || "useNotFound" });
+      res.status(403).send(errorList.UserNotCreated);
       next({ err: err || "useNotFound" });
       return;
     } else {
       bcrypt.compare(password, user.password, async (err, login) => {
         if (err || !login) {
-          res.status(403).send({ err: "WorngPassword" });
+          res.status(403).send(errorList.UnvalidPassword);
           next("password not right\n" + err);
           return;
         } else {
           if (user.permission["ceo"]) {
             let DocsOErr = await findAsy(Company, { name: user.company.name });
             if (DocsOErr.err || !DocsOErr) {
-              res.status(403).send({ err: "DBError" });
+              res.status(403).send({ err: errorList.DBError });
               next("did not delete the company " + user.company.name + "\n" + DocsOErr.err || "not found company");
               return;
             } else {
@@ -244,6 +245,6 @@ const findAsy = async (module, search) => {
       }
     })
     .then((doc) => {
-      return doc.length <= 0 ? { err: "notFound" } : doc;
+      return doc.length <= 0 ? new Error(" notFound") : doc;
     });
 };

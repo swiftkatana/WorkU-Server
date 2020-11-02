@@ -27,7 +27,11 @@ const userSchema = new mongoose.Schema({
   permission: {
     type: {},
     default: {},
-  },
+  }, NotificationsId: {
+    type: String,
+    default: ''
+  }
+
 });
 userSchema.virtual("fullName").get(function () {
   return this.firstName + " " + this.lastName;

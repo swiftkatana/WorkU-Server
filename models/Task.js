@@ -1,9 +1,9 @@
 const mongoose = require("mongoose");
 
 const TaskSchema = new mongoose.Schema({
-  title: { type: "" },
+  title: { type: String },
   sender: { type: {}, default: { firstName: "", email: "" } },
-  status: { type: "" },
+  status: { type: String, default: "uncompleted" },
   workers: {
     type: {},
     default: {},
@@ -11,3 +11,5 @@ const TaskSchema = new mongoose.Schema({
 });
 
 module.exports.TaskSchema = TaskSchema;
+
+module.exports.Task = mongoose.model('Task', TaskSchema);

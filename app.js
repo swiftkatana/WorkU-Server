@@ -25,6 +25,7 @@ const users = {};
 
 //Routs
 app.use(
+
   "/api/user",
   (req, res, next) => {
     req.users = users;
@@ -39,4 +40,3 @@ server.listen(PORT, () => {
   console.log(`Server  listen to port ${PORT} `);
 });
 
-// wow its work? test
