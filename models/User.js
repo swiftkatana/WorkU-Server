@@ -6,6 +6,9 @@ const userSchema = new mongoose.Schema({
   role: {
     type: String,
     default: "default",
+  }, class: {
+    type: String,
+    default: ''
   },
   createDateOfUser: { type: Date, default: Date.now },
   firstName: String,

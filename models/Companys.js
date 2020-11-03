@@ -25,10 +25,10 @@ const companySchema = new mongoose.Schema({
 companySchema.method("AddToTheEmployeeList", function (arremployees) {
 
     arremployees.forEach(newEmployee => {
-        if (this.employees[newEmployee.role]) {
-            this.employees[newEmployee.role][newEmployee.email] = newEmployee
+        if (this.employees[classs]) {
+            this.employees[newEmployee.classs][newEmployee.role][newEmployee.email] = newEmployee
         } else {
-            this.employees[newEmployee.role][newEmployee.email] = newEmployee
+            this.employees[newEmployee.classs][newEmployee.role][newEmployee.email] = newEmployee
         }
     })
 
