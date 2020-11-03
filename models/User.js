@@ -27,7 +27,7 @@ const userSchema = new mongoose.Schema({
   permission: {
     type: {},
     default: {},
-  }, NotificationsId: {
+  }, expoId: {
     type: String,
     default: ''
   }

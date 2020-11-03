@@ -17,7 +17,6 @@ const companySchema = new mongoose.Schema({
         type: [],
         default: []
     },
-
     employees: {
         type: {},
         default: {},
@@ -73,7 +72,7 @@ exports.addEmployeeToWaitingList = async (companyName = "", newEmployee = []) =>
 
         console.log(err)
         return error.code === 11000 ? responedList.isInUse : responedList.DBError
-    })
+    });
 
 }
 

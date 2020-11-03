@@ -83,7 +83,7 @@ router.post("/login", (req, res, next) => {
 });
 
 router.post("/register", async (req, res, next) => {
-  const { email, password, firstName, lastName, companyName, permission, } = req.body;
+  const { email, password, firstName, lastName, companyName, permission, expoId } = req.body;
   if (!email || !password || !firstName || !lastName || !companyName || !permission) {
     next('miss info been send to the register api');
     res.status(404).send(responedList.InfoUnvalid);
@@ -132,7 +132,7 @@ router.post("/register", async (req, res, next) => {
       company: {
         name: companyName,
         status: !ceo ? "waiting" : "accept",
-      },
+      }, expoId: expoId || '',
       password: hash,
       firstName,
       lastName,
