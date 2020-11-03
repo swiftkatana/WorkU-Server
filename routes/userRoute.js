@@ -225,7 +225,7 @@ router.post("/register", async (req, res, next) => {
 });
 
 router.delete("/delete", async (req, res, next) => {
-  //need to get in the req body a 2 things unique _id and is password
+  //need to get in the req body a 2 things email and is password
   const { password, email } = req.body;
 
   User.findOne({ email: email }, (err, user) => {
