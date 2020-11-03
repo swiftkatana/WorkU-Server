@@ -16,7 +16,6 @@ mongoose.connect(
     err ? console.log(err) : console.log("connect to MongoDb Server");
   }
 );
-
 //static files and MiddleWare
 require("./src/Middlewares")(app);
 
@@ -39,4 +38,3 @@ const PORT = process.env.PORT || 1029;
 server.listen(PORT, () => {
   console.log(`Server  listen to port ${PORT} `);
 });
-

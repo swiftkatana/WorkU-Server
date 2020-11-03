@@ -19,19 +19,30 @@ const companySchema = new mongoose.Schema({
     },
 
     employees: {
-        type: [],
-        default: [],
+        type: {},
+        default: {},
     },
 });
-companySchema.method("AddToTheEmployeeList", function (newEmployee) {
-    this.employees = [...this.employees, ...newEmployee];
-    this.save();
+companySchema.method("AddToTheEmployeeList", function (arremployees) {
 
+    arremployees.forEach(newEmployee => {
+        if (this.employees[newEmployee.role]) {
+            this.employees[newEmployee.role][newEmployee.email] = newEmployee
+        } else {
+            this.employees[newEmployee.role][newEmployee.email] = newEmployee
+        }
+    })
+
+    return this
 });
-companySchema.method('AddToTheWaitingList', function (employee) {
-    this.waitListEmployees.push(employee);
-    this.save();
+
+
+companySchema.method('AddToTheWaitingList', function (employees = []) {
+    this.waitListEmployees = [...this.waitListEmployees, ...employees]
+    return this
 })
+
+
 exports.companySchema = companySchema;
 const Company = new mongoose.model("company", companySchema);
 
@@ -44,19 +55,26 @@ exports.addEmployeeToEmployeeList = async (companyName = "", newEmployee = []) =
             return errorList.DBError
         } else {
             doc.AddToTheEmployeeList(newEmployee);
-            return errorList.good
+            return doc
         }
     })
 }
 
 exports.addEmployeeToWaitingList = async (companyName = "", newEmployee = []) => {
-    let Doc = await Company.findOne({ name: companyName }, (err, doc) => {
-        if (err || !doc) {
-            returnerrorList.DBError
+    return await Company.findOne({ name: companyName }).then(doc => {
+        if (!doc) {
+            console.log(companyName, doc)
+            return responedList.NotExists;
         }
-        Doc.AddToTheWaitingList(newEmployee);
-        return errorList.good
+
+        return doc.AddToTheWaitingList(newEmployee);
+
+    }).catch(err => {
+
+        console.log(err)
+        return error.code === 11000 ? responedList.isInUse : responedList.DBError
     })
+
 }
 
 // function findChildren(doc) {

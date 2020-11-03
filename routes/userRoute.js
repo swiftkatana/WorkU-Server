@@ -90,7 +90,6 @@ router.post("/register", async (req, res, next) => {
     return;
   }
   const legitEmail = await legit(email)
-  console.log(legitEmail)
   if (!legitEmail.isValid) {
 
     next('email not valid');
@@ -162,15 +161,30 @@ router.post("/register", async (req, res, next) => {
           }
         })
       }
+
+      // if the employee give the comapany that he want i will add him to the company waiting list
       if (!newcompany && companyName) {
-        const data = await addEmployeeToWaitingList(companyName, user);
-        if (data.err) {
+        let didAddToTheCompany = await Company.findOne({ name: companyName }).then(doc => {
+          if (!doc) {
+            console.log(companyName, doc)
+            return responedList.NotExists;
+          }
+
+          return doc.AddToTheWaitingList(newEmployee);
+
+        }).catch(err => {
+
+          console.log(err)
+          return error.code === 11000 ? responedList.isInUse : responedList.DBError
+        })
+
+        if (didAddToTheCompany.err) {
           console.log('error on add a new employee to a copany', data.err);
-          res.send(responedList.DBError);
+          res.send(data.err);
           return;
         } else {
 
-          newWaitingList = data;
+          newWaitingList = didAddToTheCompany;
           newWaitingList.save(err => {
             if (err) {
               console.log('error on add a new employee to a copany', err);
@@ -180,6 +194,8 @@ router.post("/register", async (req, res, next) => {
           });
         }
       }
+      //------------------------------------------------------------
+
       user.save((err) => {
         if (err) {
           err.code === 11000 ? res.status(400).send("UserAlreadyExists") : res.status(404).send(responedList.FaildSave);
