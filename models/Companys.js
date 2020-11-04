@@ -23,15 +23,7 @@ const companySchema = new mongoose.Schema({
     },
 });
 companySchema.method("AddToTheEmployeeList", function (arremployees) {
-
-    arremployees.forEach(newEmployee => {
-        if (this.employees[classs]) {
-            this.employees[newEmployee.classs][newEmployee.role][newEmployee.email] = newEmployee
-        } else {
-            this.employees[newEmployee.classs][newEmployee.role][newEmployee.email] = newEmployee
-        }
-    })
-
+    arremployees.forEach(newEmployee => this.employees[newEmployee.classs][newEmployee.role][newEmployee.email] = newEmployee)
     return this
 });
 
@@ -48,8 +40,7 @@ const Company = new mongoose.model("company", companySchema);
 exports.Company = Company;
 
 exports.addEmployeeToEmployeeList = async (companyName = "", newEmployee = []) => {
-
-    Company.findOne({ name: companyName }, (err, doc) => {
+    return await Company.findOne({ name: companyName }, (err, doc) => {
         if (err || !doc) {
             return errorList.DBError
         } else {

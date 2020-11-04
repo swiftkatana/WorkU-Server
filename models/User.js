@@ -1,11 +1,12 @@
 const mongoose = require("mongoose");
+const { responedList } = require("../respondList");
 const { TaskSchema } = require("./Task");
 const userSchema = new mongoose.Schema({
   email: { type: String, required: true, index: true, unique: true },
   password: { type: String, required: true },
   role: {
     type: String,
-    default: "default",
+    default: "",
   }, class: {
     type: String,
     default: ''
@@ -13,8 +14,14 @@ const userSchema = new mongoose.Schema({
   createDateOfUser: { type: Date, default: Date.now },
   firstName: String,
   lastName: String,
-  phone: String,
-  address: String,
+  phone: {
+    type: String,
+    default: ''
+  },
+  address: {
+    type: String,
+    default: ''
+  },
   imageProfile: {
     type: String,
     default: process.env.SERVER_IP + "images/defaultProfile.png",
@@ -39,7 +46,21 @@ const userSchema = new mongoose.Schema({
 userSchema.virtual("fullName").get(function () {
   return this.firstName + " " + this.lastName;
 });
+
+userSchema.method('updateCompany', function (newStatus) {
+  this.company = { ...this.company, ...newStatus };
+});
+
+
 exports.userSchema = userSchema;
 const User = mongoose.model("Users", userSchema);
-
 exports.User = User;
+
+
+exports.updateCompanyUser = async (email = "", newStatus = {}) => {
+  return await User.findOne({ email }).then(user => {
+    if (!user) return responedList.NotExists;
+    user.updateCompany(newStatus);
+    return user
+  }).catch(Err => responedList.DBError);
+}
