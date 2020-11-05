@@ -5,7 +5,7 @@ import { responedList } from '../respondList';
 import router from './userRoute';
 
 
-router.post("/addTask", async (req, res, next) => {
+router.post("addTask", async (req, res, next) => {
     // this route need to get sender(who that create the task) as a obj example{ firstName:" example" , email:"example",} ;
     // and array of employees example [{email:example1@example.com,fullName:"example1 example1"},...]
 
@@ -39,4 +39,4 @@ router.post("/addTask", async (req, res, next) => {
 
 });
 
-router.post('/api/company/tasks')
+router.post('/tasks')

@@ -7,7 +7,7 @@ import { responedList } from '../respondList';
 const router = express.Router();
 
 
-router.post('/api/company/asktojoin', async (req, res, next) => {
+router.post('asktojoin', async (req, res, next) => {
     const { companyName, user } = req.body
     let user = await updateCompanyUser(user.email, { name: companyName, status: 'waiting' });
     if (user.err) {
@@ -50,7 +50,7 @@ router.post('/api/company/asktojoin', async (req, res, next) => {
 
 });
 
-router.post('/api/company/createcompany', async (req, res, next) => {
+router.post('createcompany', async (req, res, next) => {
     let { companyName, user } = req.body;
 
 
@@ -58,7 +58,7 @@ router.post('/api/company/createcompany', async (req, res, next) => {
 });
 
 
-router.post('/acceptemployees', async (req, res, next) => {
+router.post('acceptemployees', async (req, res, next) => {
     // this api for accept employees - its can get arry of employees or one
     let employees = req.body.employees;
     let companyName = req.body.companyName;

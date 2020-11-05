@@ -31,6 +31,7 @@ app.use(
   },
   userRoute
 );
+app.use('/api/company')
 // setup server to listen
 
 console.clear()
