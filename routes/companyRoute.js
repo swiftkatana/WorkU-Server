@@ -1,46 +1,44 @@
-import express from 'express'
-import { addEmployeeToWaitingList } from '../models/Companys';
-import { updateCompanyUser } from '../models/User';
-import { responedList } from '../respondList';
+const express = require('express');
+const { addEmployeeToWaitingList, Company } = require('../models/Companys');
+const { getUsers, updateUserCompany } = require('../models/User');
+const { responedList } = require('../respondList');
 
 
 const router = express.Router();
 
 
-router.post('asktojoin', async (req, res, next) => {
+router.post('/asktojoin', async (req, res, next) => {
     const { companyName, user } = req.body
-    let user = await updateCompanyUser(user.email, { name: companyName, status: 'waiting' });
-    if (user.err) {
-        res.status(404).send(user.err);
-        console.log(user.err);
+    let resUser = await updateUserCompany(user.email, { name: companyName, status: 'waiting' });
+    if (resUser.err) {
+        res.status(404).send(resUser.err);
+        console.log(resUser.err);
         return;
     }
 
-    let company = await addEmployeeToWaitingList(companyName, [{ email: user.email, firstName: user.firstName, lastName: user.lastName, imageProfile: user.imageProfile }])
+    let company = await addEmployeeToWaitingList(companyName, [{ email: resUser.email, firstName: resUser.firstName, lastName: resUser.lastName, imageProfile: resUser.imageProfile }])
     if (company.err) {
         res.status(404).send(company.err)
         console.log(company.err);
         return;
     }
 
-    user.save(err => {
-        res.status(404).send(responedList.FaildSave)
-        console.log(responedList.FaildSave);
-
-        return;
+    resUser.save(err => {
+        if (err) {
+            res.status(404).send(responedList.FaildSave)
+            console.log(responedList.FaildSave);
+            return;
+        }
     });
 
     company.save(err => {
-        console.log(responedList.FaildSave);
+        if (err) {
+            resUser.updateUserCompany(user.email, { name: '', status: '' })
+            console.log(responedList.FaildSave);
+            res.status(404).send(responedList.FaildSave)
+            return
+        } else res.send(responedList.good);
 
-        setTimeout(() => {
-
-            company.save(err => {
-                res.status(404).send(responedList.FaildSave)
-                console.log(responedList.FaildSave);
-            })
-
-        }, 10000);
 
     });
 
@@ -50,9 +48,49 @@ router.post('asktojoin', async (req, res, next) => {
 
 });
 
-router.post('createcompany', async (req, res, next) => {
+router.post('/createcompany', async (req, res, next) => {
     let { companyName, user } = req.body;
+    let managers = {}
+    managers[user.adminPassword] = user
+    let newCompany = new Company({
+        name: companyName,
+        employees: { managers }
+    })
 
+
+
+    const save = await getUsers({ email: user.email }).catch(err => {
+        res.status(404).send(responedList.DBError)
+        return false
+    }).then(users => {
+        users[0].company.name = companyName;
+        users[0].company.status = 'accept';
+        users[0].permission.manager = true;
+        users[0].markModified('permission')
+        users[0].markModified('company')
+        users[0].role = 'manager';
+        newCompany.save(err => {
+            if (err) {
+                console.log(err.message)
+                res.status(404).send(err.code === 11000 ? responedList.isInUse : responedList.FaildSave)
+                return ""
+            } else {
+                users[0].save(err => {
+                    if (err) {
+
+                        newCompany.remove();
+                        console.log(err.message)
+                        res.status(404).send(responedList.FaildSave)
+                    } else {
+                        console.log('someone  create a company')
+                        res.send(responedList.good)
+                    }
+                })
+            }
+
+        });
+
+    })
 
 
 });
@@ -85,7 +123,7 @@ router.post('acceptemployees', async (req, res, next) => {
 
 
 
-
+module.exports = router
 
 
 const findAsy = async (module, search) => {

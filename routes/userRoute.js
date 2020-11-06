@@ -21,7 +21,9 @@ router.post("/login", (req, res, next) => {
     .catch(err => {
 
       next(err);
+
       res.status(403).send(responedList.DBError);
+
       return;
     })
     .then(user => {
@@ -50,7 +52,6 @@ router.post("/login", (req, res, next) => {
           return;
         } else {
           if (login) {
-            req.users[email] = email;
             loger("someone login to our web sucssesfull email: " + email);
             res.status(200).send({
               permission,
@@ -182,7 +183,7 @@ router.post("/register", async (req, res, next) => {
 
       user.save((err) => {
         if (err) {
-          err.code === 11000 ? res.status(400).send("UserAlreadyExists") : res.status(404).send(responedList.FaildSave);
+          res.status(400).send(err.code === 11000 ? responedList.UserIsAlreadyCreated : responedList.FaildSave);
           next("someone try to register but got error : " + err);
           return;
         } else {
@@ -243,9 +244,11 @@ router.delete("/delete", async (req, res, next) => {
             } else {
               delete DocsOErr[0].employees[user.classs][user.role][user.email];
               DocsOErr[0].save(err => {
-                res.status(403).send(err ? responedList.DBError : responedList.UnvalidPassword);
-                next("password not right\n" + err);
-                return;
+                if (err) {
+                  res.status(403).send(err ? responedList.DBError : responedList.UnvalidPassword);
+                  next("password not right\n" + err);
+                  return;
+                }
               })
             }
           }

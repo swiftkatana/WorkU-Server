@@ -4,6 +4,8 @@ const server = require("http").createServer(app);
 const io = require("socket.io")(server);
 const mongoose = require("mongoose");
 const userRoute = require("./routes/userRoute");
+const taskRoute = require("./routes/TasksRoute");
+const companyRoute = require('./routes/companyRoute')
 // set DB
 mongoose.set("useNewUrlParser", true);
 mongoose.set("useFindAndModify", false);
@@ -22,16 +24,9 @@ require("./src/Middlewares")(app);
 const users = {};
 
 //Routs
-app.use(
-
-  "/api/user",
-  (req, res, next) => {
-    req.users = users;
-    next();
-  },
-  userRoute
-);
-app.use('/api/company')
+app.use("/api/user", userRoute);
+app.use('/api/company', taskRoute)
+app.use('/api/company', companyRoute)
 // setup server to listen
 
 console.clear()

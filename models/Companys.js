@@ -23,7 +23,7 @@ const companySchema = new mongoose.Schema({
     },
 });
 companySchema.method("AddToTheEmployeeList", function (arremployees) {
-    arremployees.forEach(newEmployee => this.employees[newEmployee.classs][newEmployee.role][newEmployee.email] = newEmployee)
+    arremployees.forEach(newEmployee => this.employees[newEmployee.role][newEmployee.email] = newEmployee)
     return this
 });
 

@@ -7,9 +7,6 @@ const userSchema = new mongoose.Schema({
   role: {
     type: String,
     default: "",
-  }, class: {
-    type: String,
-    default: ''
   },
   createDateOfUser: { type: Date, default: Date.now },
   firstName: String,
@@ -40,6 +37,10 @@ const userSchema = new mongoose.Schema({
   }, expoId: {
     type: String,
     default: ''
+  },
+  adminPassword: {
+    type: String,
+    default: Math.random().toString()
   }
 
 });
@@ -57,10 +58,13 @@ const User = mongoose.model("Users", userSchema);
 exports.User = User;
 
 
-exports.updateCompanyUser = async (email = "", newStatus = {}) => {
+exports.updateUserCompany = async (email = "", newStatus = {}) => {
   return await User.findOne({ email }).then(user => {
     if (!user) return responedList.NotExists;
     user.updateCompany(newStatus);
     return user
   }).catch(Err => responedList.DBError);
 }
+
+exports.getUsers = async (filter) => User.find(filter).catch(err => responedList.DBError).then(users => !users ? responedList.NotExists : users)
+
