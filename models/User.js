@@ -28,9 +28,10 @@ const userSchema = new mongoose.Schema({
     default: { name: "", status: "" },
   },
   tasks: {
-    type: [],
-    default: [],
+    type: {},
+    default: { completed: {}, processing: {} }
   },
+  personalRequests: { type: {}, default{} },
   permission: {
     type: {},
     default: {},
@@ -52,6 +53,28 @@ userSchema.method('updateCompany', function (newStatus) {
   this.company = { ...this.company, ...newStatus };
 });
 
+
+
+userSchema.method('create&UpdateTask', function (task) {
+  this.Tasks.processing[task._id] = task;
+});
+
+
+userSchema.method('completed', function (task) {
+  delete this.Tasks.processing[task._id];
+  this.Tasks.completed[task._id] = task;
+});
+
+userSchema.method('create&UpdatePersonalRequest', function (personalRequest) {
+  this.personalRequests[personalRequest._id] = personalRequest;
+});
+
+userSchema.method('filterUser', function () {
+  let filterUser = { ...this._doc }
+  filterUser._id = 'Base64 = aGFoYSB5b3UgdGhpbmsgdGhhdCB0aGUgcmVhbCBpZCBoYWhhaGFoYQ=='
+  filterUser.password = 'aGFoYWhhIHlvdSB0aGluayB0aGF0IGlzIHRoZSBwYXNzd29yZCBoYWhhaGFoYWhh '
+  return filterUser
+});
 
 exports.userSchema = userSchema;
 const User = mongoose.model("Users", userSchema);

@@ -9,11 +9,11 @@ const companySchema = new mongoose.Schema({
         index: true,
         unique: true,
     },
-    completedTasks: {
+    Tasks: {
         type: {},
-        default: { completed: [], processing: [] }
+        default: { completed: {}, processing: {} }
     },
-    personalreuqest: {
+    personalRequests: {
         type: {},
         default: {}
     },
@@ -36,6 +36,21 @@ companySchema.method("AddToTheEmployeeList", function (arremployees) {
     arremployees.forEach(newEmployee => this.employees[newEmployee.email] = newEmployee)
     return this
 });
+
+companySchema.method('create&UpdateTask', function (task) {
+    this.Tasks.processing[task._id] = task;
+});
+
+
+companySchema.method('completed', function (task) {
+    delete this.Tasks.processing[task._id];
+    this.Tasks.completed[task._id] = task;
+});
+
+companySchema.method('create&UpdatePersonalRequest', function (personalRequest) {
+    this.personalRequests[personalRequest._id] = personalRequest;
+});
+
 
 companySchema.method('removeEmployees', function (arremployees) {
     arremployees.forEach(employee => {

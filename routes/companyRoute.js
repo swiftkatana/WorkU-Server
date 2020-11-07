@@ -9,27 +9,21 @@ const router = express.Router();
 
 router.post('/createcompany', async (req, res, next) => {
     let { companyName, email } = req.body;
-    let joinCode = Math.random().toString().replace(".", "") + companyName;
-    let managers = {}
-    managers[joinCode] = email
-    console.log(joinCode)
+    let joinCode = Math.random().toString().replace(".", "hdfshDSA#@!").replace("3", "hdfshDSA#@!") + companyName;
     let newCompany = new Company({
         name: companyName,
-        employees: { managers },
+        employees: {},
         joinCode: joinCode
     })
-
+    newCompany.employees['manager'] = { joinCode, email }
 
     getUsers({ email: email }).catch(err => {
-        res.status(404).send(responedList.DBError)
+        res.send(responedList.DBError)
         return false
     }).then(users => {
-        if (!user) {
-
-        }
-        if (users[0].company.name !== '') {
-            res.status(404).send(responedList.DBError);
-            return
+        if (!users[0]) {
+            res.send(responedList.UserNotCreated);
+            return;
         }
         users[0].company.name = companyName;
         users[0].company.status = 'accept';
@@ -42,7 +36,7 @@ router.post('/createcompany', async (req, res, next) => {
         newCompany.save(err => {
             if (err) {
                 console.log(err.message)
-                res.status(404).send(err.code === 11000 ? responedList.isInUse : responedList.FaildSave)
+                res.send(err.code === 11000 ? responedList.isInUse : responedList.FaildSave)
                 return ""
             } else {
                 users[0].save(err => {
@@ -50,7 +44,7 @@ router.post('/createcompany', async (req, res, next) => {
 
                         newCompany.remove();
                         console.log(err.message)
-                        res.status(404).send(responedList.FaildSave)
+                        res.send(responedList.FaildSave)
                     } else {
                         console.log('someone  create a company')
                         res.send(joinCode)
@@ -75,21 +69,21 @@ router.delete("/leave", async (req, res, next) => {
     User.findOne({ unqiePassword: manager.unqiePassword }).then(async docManager => {
         if (!docManager) {
             console.log('cant find the manager')
-            res.status(404).send(responedList.InfoUnvalid);
+            res.send(responedList.InfoUnvalid);
             return
         }
         saveCompany = await Company.findOne({ name: docManager.company.name })
             .then(docCompany => {
                 if (!docCompany) {
                     console.log('cant find the company')
-                    res.status(404).send(responedList.InfoUnvalid);
+                    res.send(responedList.InfoUnvalid);
                     return false
                 }
                 company.removeEmployees([{ email }]);
                 company.save(err => {
                     if (err) {
                         console.log('cant update company that i want to remove a employee');
-                        res.status(404).send(responedList.FaildSave);
+                        res.send(responedList.FaildSave);
                         return false
                     }
                 });
@@ -97,7 +91,7 @@ router.delete("/leave", async (req, res, next) => {
 
             }).catch(err => {
                 console.log('cant update company that i want to remove a employee');
-                res.status(404).send(responedList.DBError);
+                res.send(responedList.DBError);
                 return false
             });
 
@@ -111,7 +105,7 @@ router.delete("/leave", async (req, res, next) => {
 
     }).catch(err => {
         console.log('cant update  that i want to remove a employee');
-        res.status(404).send(responedList.DBError);
+        res.send(responedList.DBError);
     })
 
 
