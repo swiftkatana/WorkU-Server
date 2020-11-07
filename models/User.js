@@ -31,7 +31,7 @@ const userSchema = new mongoose.Schema({
     type: {},
     default: { completed: {}, processing: {} }
   },
-  personalRequests: { type: {}, default{} },
+  personalRequests: { type: {}, default: {} },
   permission: {
     type: {},
     default: {},
