@@ -9,10 +9,10 @@ router.post("/addTask", async (req, res, next) => {
     // this route need to get sender(who that create the task) as a obj example{ firstName:" example" , email:"example",} ;
     // and array of employees example [{email:example1@example.com,fullName:"example1 example1"},...]
 
-    let employees = req.body.employees;
+    let emails = req.body.employees;
     let task = req.body.task;
 
-    const emails = employees.map((user) => user.email);
+
 
     getUsers({ email: { $in: emails } }).then((users) => {
         if (users.length === employees.length) {

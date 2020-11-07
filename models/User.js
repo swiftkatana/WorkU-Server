@@ -25,7 +25,7 @@ const userSchema = new mongoose.Schema({
   },
   company: {
     type: {},
-    default: { name: "none", status: "" },
+    default: { name: "", status: "" },
   },
   tasks: {
     type: [],
@@ -38,9 +38,9 @@ const userSchema = new mongoose.Schema({
     type: String,
     default: ''
   },
-  adminPassword: {
+  joinCode: {
     type: String,
-    default: Math.random().toString()
+    default: ''
   }
 
 });
