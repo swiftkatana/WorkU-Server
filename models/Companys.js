@@ -9,11 +9,14 @@ const companySchema = new mongoose.Schema({
         index: true,
         unique: true,
     },
-    Tasks: {
+    tasks: {
         type: {},
         default: { completed: {}, processing: {} }
     },
     personalRequests: {
+        type: {},
+        default: {}
+    }, manager: {
         type: {},
         default: {}
     },
@@ -37,8 +40,8 @@ companySchema.method("AddToTheEmployeeList", function (arremployees) {
     return this
 });
 
-companySchema.method('create&UpdateTask', function (task) {
-    this.Tasks.processing[task._id] = task;
+companySchema.method('createUpdateTask', function (task) {
+    this.tasks.processing[task._id] = task;
 });
 
 

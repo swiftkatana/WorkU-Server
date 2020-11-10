@@ -2,6 +2,7 @@ const express = require('express');
 const { Company } = require('../models/Companys');
 const { getUsers, User } = require('../models/User');
 const { responedList } = require('../respondList');
+const looger = require('../src/looger');
 
 
 const router = express.Router();
@@ -14,7 +15,7 @@ router.post('/createcompany', async (req, res, next) => {
         name: companyName,
         employees: {},
         joinCode: joinCode
-    })
+    });
     newCompany.employees['manager'] = { joinCode, email }
 
     getUsers({ email: email }).catch(err => {
@@ -22,7 +23,7 @@ router.post('/createcompany', async (req, res, next) => {
         return false
     }).then(users => {
         if (!users[0]) {
-            res.send(responedList.UserNotCreated);
+            res.send(responedList.usersNotFound);
             return;
         }
         users[0].company.name = companyName;
@@ -35,26 +36,42 @@ router.post('/createcompany', async (req, res, next) => {
         users[0].role = 'manager';
         newCompany.save(err => {
             if (err) {
-                console.log(err.message)
+                looger(err.message)
                 res.send(err.code === 11000 ? responedList.isInUse : responedList.FaildSave)
-                return ""
+                return
             } else {
                 users[0].save(err => {
                     if (err) {
-
                         newCompany.remove();
-                        console.log(err.message)
+                        looger(err.message)
                         res.send(responedList.FaildSave)
                     } else {
-                        console.log('someone  create a company')
+                        looger('someone  create a company')
                         res.send(joinCode)
                     }
-                })
+                });
             }
 
         });
 
     })
+
+
+});
+
+
+router.post('/getcompany', async (req, res) => {
+
+    const { joinCode, email } = req.body;
+
+    if (!joinCode || !email) {
+        res.send(responedList.infoInvalid);
+        return;
+    }
+
+    const comapny = await Company.findOne({ joinCode }).catch(err => responedList.DBError).then(comapny => comapny);
+
+    res.send(comapny);
 
 
 });
@@ -68,21 +85,21 @@ router.delete("/leave", async (req, res, next) => {
     let saveCompany, saveManager, saveEmployee
     User.findOne({ unqiePassword: manager.unqiePassword }).then(async docManager => {
         if (!docManager) {
-            console.log('cant find the manager')
+            looger('cant find the manager')
             res.send(responedList.InfoUnvalid);
             return
         }
         saveCompany = await Company.findOne({ name: docManager.company.name })
             .then(docCompany => {
                 if (!docCompany) {
-                    console.log('cant find the company')
+                    looger('cant find the company')
                     res.send(responedList.InfoUnvalid);
                     return false
                 }
                 company.removeEmployees([{ email }]);
                 company.save(err => {
                     if (err) {
-                        console.log('cant update company that i want to remove a employee');
+                        looger('cant update company that i want to remove a employee');
                         res.send(responedList.FaildSave);
                         return false
                     }
@@ -90,7 +107,7 @@ router.delete("/leave", async (req, res, next) => {
                 return true
 
             }).catch(err => {
-                console.log('cant update company that i want to remove a employee');
+                looger('cant update company that i want to remove a employee');
                 res.send(responedList.DBError);
                 return false
             });
@@ -104,7 +121,7 @@ router.delete("/leave", async (req, res, next) => {
         }
 
     }).catch(err => {
-        console.log('cant update  that i want to remove a employee');
+        looger('cant update  that i want to remove a employee');
         res.send(responedList.DBError);
     })
 

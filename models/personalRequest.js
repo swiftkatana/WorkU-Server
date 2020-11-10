@@ -4,7 +4,7 @@ const personalRequestSchema = new mongoose.Schema({
     type: { type: String, default: '' },
     body: { type: String, default: '' },
     fullName: { type: String, default: '' },
-    status: { type: String, default: 'processing' }
+    status: { type: String, default: 'בטיפול' }
 });
 
 

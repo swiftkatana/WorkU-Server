@@ -1,6 +1,5 @@
 const mongoose = require("mongoose");
 const { responedList } = require("../respondList");
-const { TaskSchema } = require("./Task");
 const userSchema = new mongoose.Schema({
   email: { type: String, required: true, index: true, unique: true },
   password: { type: String, required: true },
@@ -24,8 +23,8 @@ const userSchema = new mongoose.Schema({
     default: process.env.SERVER_IP + "images/defaultProfile.png",
   },
   company: {
-    type: {},
-    default: { name: "", status: "" },
+    type: String,
+    default: '',
   },
   tasks: {
     type: {},
@@ -53,13 +52,19 @@ userSchema.method('updateCompany', function (newStatus) {
   this.company = { ...this.company, ...newStatus };
 });
 
+userSchema.method('personalRequestsDelete', function (_id) {
+  delete this.personalRequests[_id];
 
-
-userSchema.method('create&UpdateTask', function (task) {
-  this.Tasks.processing[task._id] = task;
 });
 
 
+userSchema.method('createUpdateTask', function (task) {
+  this.Tasks.processing[task._id] = task;
+});
+
+userSchema.method('deleteTask', function (id) {
+  delete this.Tasks.processing[id];
+});
 userSchema.method('completed', function (task) {
   delete this.Tasks.processing[task._id];
   this.Tasks.completed[task._id] = task;
@@ -73,6 +78,7 @@ userSchema.method('filterUser', function () {
   let filterUser = { ...this._doc }
   filterUser._id = 'Base64 = aGFoYSB5b3UgdGhpbmsgdGhhdCB0aGUgcmVhbCBpZCBoYWhhaGFoYQ=='
   filterUser.password = 'aGFoYWhhIHlvdSB0aGluayB0aGF0IGlzIHRoZSBwYXNzd29yZCBoYWhhaGFoYWhh '
+  filterUser.fullName = filterUser.firstName + " " + filterUser.lastName;
   return filterUser
 });
 
