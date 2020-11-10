@@ -4,7 +4,7 @@ const legit = require('legit');
 
 const { User } = require("../models/User");
 const loger = require("../src/looger");
-const { Company, addEmployeeToWaitingList } = require("../models/Companys");
+const { Company, addEmployeeToWaitingList, updateExpoId } = require("../models/Companys");
 const { responedList } = require("../respondList");
 const { PersonalRequest } = require("../models/personalRequest");
 const looger = require("../src/looger");
@@ -12,7 +12,7 @@ const saltPassword = 10;
 const router = express.Router();
 
 router.post("/login", (req, res) => {
-  const { email, password } = req.body;
+  const { email, password, expoId } = req.body;
   if (!email || !password) {
 
     res.send(responedList.InfoUnvalid)
@@ -33,7 +33,7 @@ router.post("/login", (req, res) => {
         loger('cant find user on login ' + email);
         return;
       }
-      bcrypt.compare(password, user.password, (err, login) => {
+      bcrypt.compare(password, user.password, async (err, login) => {
         if (err) {
           loger("password not right\n" + err);
 
@@ -41,8 +41,27 @@ router.post("/login", (req, res) => {
           return;
         } else {
           if (login) {
-            loger("someone login to our web sucssesfull email: " + email);
+            if (user.expoId !== expoId) {
+              console.log('new expo id')
+              if (user.Company) {
+                let err = await updateExpoId({ expoId, name: user.Company, email: user.email });
+                if (err.err) {
+                  res.send(err);
+                  return
+                }
 
+              }
+              user.expoId = expoId;
+              user.markModified('expoId')
+              user.save(err => {
+                if (err) {
+                  res.send(responedList.FaildSave);
+                  return;
+                }
+              })
+
+            }
+            loger("someone login to our web sucssesfull email: " + email);
             res.send(user.filterUser());
             return;
           } else {
@@ -127,8 +146,8 @@ router.post("/joincompany", async (req, res) => {
     res.send(!updateUser ? responedList.usersNotFound : updateCompany);
   }
 
-  updateCompany.employees[updateUser.email] = updateUser.email;
-
+  updateCompany.employees[updateUser.email] = { email: updateUser.email, firstName: updateUser.firstName, lastName: updateUser.lastName, expoId: updateUser.expoId };
+  updateCompany.markModified('employees')
   updateUser.company = updateCompany.name;
 
 

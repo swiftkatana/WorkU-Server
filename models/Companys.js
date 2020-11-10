@@ -65,3 +65,20 @@ companySchema.method('removeEmployees', function (arremployees) {
 
 exports.companySchema = companySchema;
 exports.Company = Company;
+
+
+exports.updateExpoId = async (expoId, name, email) => {
+
+    const doc = await Company.findOne({ name }).catch(err => responedList.DBError);
+    if (!doc || doc.err) {
+        return !doc ? responedList.NotExists : doc;
+    }
+    doc.employees[email].expoId = expoId;
+    doc.save(err => {
+        if (err) {
+            return responedList.FaildSave;
+        }
+        return doc
+    })
+
+}

@@ -10,14 +10,14 @@ const router = express.Router();
 
 router.post('/createcompany', async (req, res, next) => {
     let { companyName, email } = req.body;
-    let joinCode = Math.random().toString().replace(".", "hdfshDSA#@!").replace("3", "hdfshDSA#@!") + companyName;
+    let joinCode = Math.floor(Math.random() * (999999 - 100000) + 100000) + companyName[0] + "#" + companyName;
     let newCompany = new Company({
         name: companyName,
         employees: {},
         joinCode: joinCode
     });
-    newCompany.employees['manager'] = { joinCode, email }
-
+    newCompany.manager = { joinCode, email }
+    newCompany.markModified('manager');
     getUsers({ email: email }).catch(err => {
         res.send(responedList.DBError)
         return false
