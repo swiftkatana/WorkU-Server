@@ -303,4 +303,41 @@ router.post('/updatetask', async (req, res) => {
 });
 
 
+router.post('/gettask', async (req, res) => {
+  const { _id, email } = req.body;
+
+  if (!_id || !email) {
+    res.send(responedList.infoInvalid);
+    return;
+  }
+  const user = await User.findOne(email).catch(err => responedList.DBError).then(doc => doc);
+  if (!user || user.err) {
+    res.send(!user ? responedList.usersNotFound : user.err);
+    return;
+  }
+  let allTasks = { ...user.tasks.processing, ...user.tasks.completed }
+  res.send(allTasks[_id] || responedList.NotExists);
+
+
+});
+
+
+router.post('/getpersonalreuqest', async (req, res) => {
+  const { _id, email } = req.body;
+
+  if (!_id || !email) {
+    res.send(responedList.infoInvalid);
+    return;
+  }
+  const user = await User.findOne(email).catch(err => responedList.DBError).then(doc => doc);
+  if (!user || user.err) {
+    res.send(!user ? responedList.usersNotFound : user.err);
+    return;
+  }
+
+  res.send(user.personalRequests[_id] || responedList.NotExists);
+
+
+});
+
 module.exports = router;
