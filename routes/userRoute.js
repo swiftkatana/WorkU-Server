@@ -205,7 +205,7 @@ router.post("/personalreuqest", async (req, res) => {
     type, body, fullName, email
   });
 
-  company.personalRequests[newPersonalRequest._id] = newPersonalRequest;
+  company.personalRequests.processing[newPersonalRequest._id] = newPersonalRequest;
   company.markModified('personalRequests');
   company.save(err => {
     if (err) {
@@ -215,7 +215,7 @@ router.post("/personalreuqest", async (req, res) => {
     }
   })
 
-  user.personalRequests[newPersonalRequest._id] = newPersonalRequest;
+  user.personalRequests.processing[newPersonalRequest._id] = newPersonalRequest;
   user.markModified('personalRequests');
   user.save(err => {
     if (err) {

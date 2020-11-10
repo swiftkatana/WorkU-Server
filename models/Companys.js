@@ -15,7 +15,7 @@ const companySchema = new mongoose.Schema({
     },
     personalRequests: {
         type: {},
-        default: {}
+        default: { completed: {}, processing: {} }
     }, manager: {
         type: {},
         default: {}

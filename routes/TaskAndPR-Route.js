@@ -18,8 +18,8 @@ router.post("/addtasks", async (req, res) => {
     looger('try to add task')
     let users = await User.find({ email: { $in: employees } }).catch(err => responedList.DBError).then(users => users);
     if (users.length !== employees.length || !users || users.err || !users[0].company) {
-        looger(users)
-        res.send(!users.err ? responedList.NotExists : users.err);
+        looger(users ? users : responedList.usersNotFound)
+        res.send(!users.err ? responedList.usersNotFound : users.err);
         return
     }
     let company = await Company.findOne({ name: users[0].company }).catch(err => responedList.DBError).then(company => company);

@@ -25,7 +25,7 @@ const users = {};
 
 app.get('/', (req, res) => {
   console.log('dsa');
-  res.send('dsa');
+  res.send('<h1>>how did you get it??</h1');
 })
 
 
