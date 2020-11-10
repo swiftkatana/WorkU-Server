@@ -58,16 +58,9 @@ userSchema.method('personalRequestsDelete', function (_id) {
 });
 
 
-userSchema.method('createUpdateTask', function (task) {
-  this.Tasks.processing[task._id] = task;
-});
-
 userSchema.method('deleteTask', function (id) {
+
   delete this.Tasks.processing[id];
-});
-userSchema.method('completed', function (task) {
-  delete this.Tasks.processing[task._id];
-  this.Tasks.completed[task._id] = task;
 });
 
 userSchema.method('create&UpdatePersonalRequest', function (personalRequest) {

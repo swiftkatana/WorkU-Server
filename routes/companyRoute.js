@@ -8,7 +8,7 @@ const looger = require('../src/looger');
 const router = express.Router();
 
 
-router.post('/createcompany', async (req, res, next) => {
+router.post('/createcompany', async (req, res) => {
     let { companyName, email } = req.body;
     let joinCode = Math.floor(Math.random() * (999999 - 100000) + 100000) + companyName[0] + "#" + companyName;
     let newCompany = new Company({
@@ -68,12 +68,12 @@ router.post('/getcompany', async (req, res) => {
         res.send(responedList.infoInvalid);
         return;
     }
-
     const comapny = await Company.findOne({ joinCode }).catch(err => responedList.DBError).then(comapny => comapny);
-
+    if (comapny.err || !comapny || comapny.manager.email !== email) {
+        res.send(comapny.err ? comapny.err : responedList.NotExists);
+        return;
+    }
     res.send(comapny);
-
-
 });
 
 
@@ -129,18 +129,57 @@ router.delete("/leave", async (req, res, next) => {
 
 });
 
-module.exports = router
+
+router.post('/updatepersonalreuqest', async (req, res) => {
+    const { _id, status, respond, email } = req.body;
+    if (!_id || !status || !respond || !email) {
+        res.send(responedList.infoInvalid);
+        return;
+    }
+    let user = await User.findOne({ email }).catch(err => responedList.FaildSave).then(doc => doc);
+    if (user.err || !user) {
+        looger(user);
+        res.send(user.err ? user.err : responedList.usersNotFound);
+        return;
+    }
+
+    let company = await Company.findOne({ name: user.company }).then(doc => doc).catch(err => responedList.DBError);
+    if (!company || company.err) {
+        looger(company);
+        res.send(!company ? responedList.usersNotFound : company.err);
+        return;
+    }
+
+    let newPersonalRequests = { ...user.personalRequests[_id], respond, status, };
 
 
-const findAsy = async (module, search) => {
-    return await module
-        .find(search)
-        .catch((err) => {
-            {
-                return err;
-            }
-        })
-        .then((doc) => {
-            return doc.length <= 0 ? { err: "notFound" } : doc;
-        });
-};
+
+    company.personalRequests[_id] = newPersonalRequests;
+    user.personalRequests[_id] = newPersonalRequests;
+
+
+    company.markModified('personalRequests');
+    user.markModified('personalRequests');
+
+    company.save(err => {
+        if (err) {
+            res.send(responedList.FaildSave);
+            user.personalRequestsDelete(newPersonalRequests._id);
+            return;
+        } else {
+            user.save(err => {
+                if (err) {
+                    res.send(responedList.FaildSave);
+                    user.personalRequestsDelete(newPersonalRequests._id);
+                    return;
+                }
+                res.send(newPersonalRequests);
+            })
+        }
+    })
+
+
+
+});
+
+module.exports = router  

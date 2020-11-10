@@ -45,7 +45,7 @@ companySchema.method('createUpdateTask', function (task) {
 });
 
 
-companySchema.method('completed', function (task) {
+companySchema.method('completedTask', function (task) {
     delete this.Tasks.processing[task._id];
     this.Tasks.completed[task._id] = task;
 });

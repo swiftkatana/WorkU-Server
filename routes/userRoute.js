@@ -205,7 +205,7 @@ router.post("/personalreuqest", async (req, res) => {
     type, body, fullName, email
   });
 
-  company.personalRequests.processing[newPersonalRequest._id] = newPersonalRequest;
+  company.personalRequests[newPersonalRequest._id] = newPersonalRequest;
   company.markModified('personalRequests');
   company.save(err => {
     if (err) {
@@ -215,7 +215,7 @@ router.post("/personalreuqest", async (req, res) => {
     }
   })
 
-  user.personalRequests.processing[newPersonalRequest._id] = newPersonalRequest;
+  user.personalRequests[newPersonalRequest._id] = newPersonalRequest;
   user.markModified('personalRequests');
   user.save(err => {
     if (err) {
@@ -231,11 +231,73 @@ router.post("/personalreuqest", async (req, res) => {
 
 router.post('/updatetask', async (req, res) => {
 
-  let { text, _id } = req.body;
-  if (!_id) {
+  let { _id, comment, email, complete } = req.body;
+  if (!_id || !email) {
     res.send(responedList.infoInvalid)
     return;
   }
+  const user = await User.findOne({ email }).catch(err => responedList.DBError).then(doc => doc);
+  if (!user || user.err) {
+    res.send(user ? user.err : responedList.usersNotFound);
+    return;
+  }
+  const company = await Company.findOne({ name: user.company }).catch(err => responedList.DBError).then(doc => doc);
+  if (!company || company.err) {
+    res.send(company ? company.err : responedList.NotExists);
+    return;
+  }
+
+  let updateTask = user.tasks.processing[_id];
+
+  comment ? updateTask.comments.push(comment) : null;
+
+  if (complete) {
+    updateTask.status = 'הושלם'
+    delete user.tasks.processing[updateTask._id]
+    delete company.tasks.processing[updateTask._id]
+    user.tasks.completed[updateTask._id] = updateTask;
+    company.tasks.completed[updateTask._id] = updateTask;
+    user.markModified('tasks');
+    company.markModified('tasks');
+    company.save(err => {
+      if (err) {
+        res.send(responedList.FaildSave);
+        return;
+      }
+      user.save(err => {
+        if (err) {
+          res.send(responedList.FaildSave);
+          return
+        }
+      })
+    })
+
+  } else {
+    user.tasks.processing[updateTask._id] = updateTask;
+    company.tasks.processing[updateTask._id] = updateTask;
+    user.markModified('tasks');
+    company.markModified('tasks');
+    company.save(err => {
+      if (err) {
+        res.send(responedList.FaildSave);
+        return;
+      }
+      user.save(err => {
+        if (err) {
+          res.send(responedList.FaildSave);
+          return
+        }
+      })
+    })
+
+
+  }
+  res.send(updateTask);
+
+
+
+
+
 
 
 });
