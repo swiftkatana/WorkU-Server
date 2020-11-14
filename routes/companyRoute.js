@@ -10,7 +10,7 @@ const router = express.Router();
 
 router.post('/createcompany', async (req, res) => {
     looger('111111111111');
-    let { companyName, email } = req.body;
+    const { companyName, email } = req.body;
     let joinCode = Math.floor(Math.random() * (999999 - 100000) + 100000) + companyName[0] + "#" + companyName;
     let newCompany = new Company({
         name: companyName,
@@ -19,11 +19,14 @@ router.post('/createcompany', async (req, res) => {
     });
     newCompany.manager = { joinCode, email }
     newCompany.markModified('manager');
-    getUsers({ email: email }).catch(err => {
+    getUsers({ email: email }).catch(err => 
+    {
         res.send(responedList.DBError)
-        return false
-    }).then(users => {
-        if (!users[0]) {
+        return false;
+    }).then(users => 
+    {
+        if (!users[0])
+         {
             res.send(responedList.usersNotFound);
             return;
         }
@@ -35,18 +38,23 @@ router.post('/createcompany', async (req, res) => {
         users[0].markModified('company')
         users[0].markModified('joinCode')
         users[0].role = 'manager';
-        newCompany.save(err => {
-            if (err) {
+        newCompany.save(err => 
+        {
+            if (err) 
+            {
                 looger(err.message)
                 res.send(err.code === 11000 ? responedList.isInUse : responedList.FaildSave)
-                return
-            } else {
-                users[0].save(err => {
-                    if (err) {
+            } else
+             {
+                users[0].save(err => 
+                {
+                    if (err) 
+                    {
                         newCompany.remove();
                         looger(err.message)
                         res.send(responedList.FaildSave)
-                    } else {
+                    } else 
+                    {
                         looger('someone  create a company')
                         res.send(newCompany)
                     }
@@ -63,6 +71,7 @@ router.post('/createcompany', async (req, res) => {
 
 router.post('/getcompany', async (req, res) => {
 
+    looger('111111111111');
     const { joinCode, email } = req.body;
 
     if (!joinCode || !email) {
