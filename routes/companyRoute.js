@@ -9,7 +9,6 @@ const router = express.Router();
 
 
 router.post('/createcompany', async (req, res) => {
-    looger('111111111111');
     const { companyName, email } = req.body;
     let joinCode = Math.floor(Math.random() * (999999 - 100000) + 100000) + companyName[0] + "#" + companyName;
     let newCompany = new Company({
@@ -70,8 +69,6 @@ router.post('/createcompany', async (req, res) => {
 
 
 router.post('/getcompany', async (req, res) => {
-
-    looger('111111111111');
     const { joinCode, email } = req.body;
 
     if (!joinCode || !email) {
