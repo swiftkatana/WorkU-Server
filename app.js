@@ -32,7 +32,7 @@ app.get('/', (req, res) => {
 //Routs
 app.use("/api/user", userRoute);
 app.use('/api/company', taskRoute)
-app.use('/api/company', companyRoute)
+app.use('/api/company2', companyRoute)
 // setup server to listen
 
 console.clear()
