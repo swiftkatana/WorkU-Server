@@ -47,7 +47,7 @@ router.post('/createcompany', async (req, res) => {
                         res.send(responedList.FaildSave)
                     } else {
                         looger('someone  create a company')
-                        res.send(joinCode)
+                        res.send(newCompany)
                     }
                 });
             }
