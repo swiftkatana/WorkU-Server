@@ -12,7 +12,6 @@
   },
   "author": "",
   "license": "ISC",
-  
   "dependencies": {
     "@azure/storage-blob": "^12.2.0-preview.1",
     "bcrypt": "^5.0.0",

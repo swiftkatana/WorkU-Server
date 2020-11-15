@@ -6,7 +6,7 @@ const mongoose = require("mongoose");
 const userRoute = require("./routes/userRoute");
 const taskRoute = require("./routes/TaskAndPR-Route");
 const companyRoute = require('./routes/companyRoute')
-// set DB
+// set DB1233
 mongoose.set("useNewUrlParser", true);
 mongoose.set("useFindAndModify", false);
 mongoose.set("useCreateIndex", true);
