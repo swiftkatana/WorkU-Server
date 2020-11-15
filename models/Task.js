@@ -5,7 +5,7 @@ const TaskSchema = new mongoose.Schema({
   description: { type: String, default: '', required: true },
   priority: { type: String, default: '' },
   comments: { type: [], default: [] },
-  status: { type: String, default: "בטיפול" },
+  status: { type: String, default: "not complete" },
 });
 
 module.exports.TaskSchema = TaskSchema;

@@ -252,7 +252,7 @@ router.post('/updatetask', async (req, res) => {
   comment ? updateTask.comments.push(comment) : null;
 
   if (complete) {
-    updateTask.status = 'הושלם'
+    updateTask.status = 'completed'
     delete user.tasks.processing[updateTask._id]
     delete company.tasks.processing[updateTask._id]
     user.tasks.completed[updateTask._id] = updateTask;
