@@ -409,18 +409,60 @@ router.post('/restuserworktime', async (req, res) => {
 });
 
 
-// router.post('/changepassword', (req, res) => {
-//   let { newPassword, oldPassword, email } = req.body;
+router.post('/changepassword', async (req, res) => {
+  let { newPassword, oldPassword, email } = req.body;
 
-//   if (!newPassword || !oldPassword || !email) {
-//     res.send(responedList.infoInvalid);
-//     return;
-//   }
+  if (!newPassword || !oldPassword || !email) {
+    res.send(responedList.infoInvalid);
+    return;
+  }
+
+  let user = await User.findOne({ email }).catch(err => responedList.DBError).then(doc => doc || responedList.usersNotFound)
+  if (user.err) {
+    res.send(user);
+    return;
+  }
+
+  bcrypt.compare(oldPassword, user.password, (err, login) => {
+    if (err) {
+      loger("password not right\n" + err);
+      res.send(responedList.infoInvalid);
+      return;
+    } else {
+      if (!login) {
+        loger(req.ip + " just try login but not! password not good  :  " + email);
+        res.send(responedList.InfoUnvalid);
+        return;
+      }
+
+      bcrypt.hash(newPassword, saltPassword, (err, hash) => {
+        if (err) {
+          loger("err on register" + err);
+          res.send(responedList.FaildSave);
+          return;
+        }
+
+        user.password = hash;
+        user.save((err) => {
+          if (err) {
+            res.send(responedList.FaildSave);
+            loger("someone try to register but got error : " + err);
+            return;
+          } else {
+            loger("someone change to our web now this email : " + email);
+            res.send('good');
+          }
+        });
+
+      });
+
+
+    }
+  });
 
 
 
 
-
-// });
+});
 
 module.exports = router;

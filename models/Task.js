@@ -5,7 +5,6 @@ const TaskSchema = new mongoose.Schema({
   description: { type: String, default: '', required: true },
   priority: { type: String, default: '' },
   comments: { type: [], default: [] },
-  status: { type: String, default: "not_complete" },
   date: { type: Date, default: Date.now().toLocaleString() }
 });
 
