@@ -1,4 +1,4 @@
-const express = require("express");
+sconst express = require("express");
 const bcrypt = require("bcrypt");
 const legit = require('legit');
 
@@ -47,7 +47,7 @@ router.post("/login", (req, res) => {
                 let err = await updateExpoId({ expoId, name: user.Company, email: user.email });
                 if (err.err) {
                   res.send(err);
-                  return
+                  av                  return;
                 }
 
               }
@@ -123,34 +123,36 @@ router.post("/register", async (req, res) => {
 });
 
 router.post("/joincompany", async (req, res) => {
-  loger('join comepany')
+  loger(' try join comepany')
   let { email, code } = req.body
   if (!email || !code) {
     loger('error1')
     res.send(responedList.InfoUnvalid)
     loger(responedList.InfoUnvalid);
-    return
+    return;
   }
-  let updateCompany, updateUser;
+  let updateCompany;
+  let updateUser;
   // get the company
-  updateCompany = await Company.findOne({ joinCode: code }).catch(err => responedList.DBError).then(company => company);
-  if (!updateCompany || updateCompany.err) {
+  updateCompany = await Company.findOne({ joinCode: code }).catch(err => responedList.DBError).then(company => company || responedList.NotExists);
+  if (updateCompany.err) {
     loger('error2')
-    res.send(!updateCompany ? responedList.NotExists : updateCompany);
+    res.send(updateCompany.err);
     return;
   }
   //get the user
-  updateUser = await User.findOne({ email }).catch(err => responedList.DBError).then(user => user);
-  if (updateUser.err || !updateUser) {
+  updateUser = await User.findOne({ email }).catch(err => responedList.DBError).then(user => user || responedList.usersNotFound);
+  if (updateUser.err) {
     loger('error3')
-    res.send(!updateUser ? responedList.usersNotFound : updateCompany);
+    res.send(updateUser.err);
+    return
   }
 
   updateCompany.employees[updateUser.email] = { email: updateUser.email, fullName: updateUser.firstName + " " + updateUser.lastName, firstName: updateUser.firstName, lastName: updateUser.lastName, expoId: updateUser.expoId };
   updateCompany.markModified('employees')
   updateUser.company = updateCompany.name;
 
-
+  console.log(updateUser)
   updateCompany.save(err => {
     if (err) {
       loger('error4')
@@ -182,7 +184,7 @@ router.post("/personalreuqest", async (req, res) => {
 
   if (!type || !body || !fullName || !email) {
     res.send(responedList.infoInvalid);
-    return
+    return;
   }
 
   let user = await User.findOne({ email }).then((user) => user).catch(err => responedList.DBError);
@@ -267,7 +269,7 @@ router.post('/updatetask', async (req, res) => {
       user.save(err => {
         if (err) {
           res.send(responedList.FaildSave);
-          return
+          return;
         }
       })
     })
@@ -285,7 +287,7 @@ router.post('/updatetask', async (req, res) => {
       user.save(err => {
         if (err) {
           res.send(responedList.FaildSave);
-          return
+          return;
         }
       })
     })
@@ -336,6 +338,87 @@ router.post('/getpersonalreuqest', async (req, res) => {
   }
 
   res.send(user.personalRequests[_id] || responedList.NotExists);
+
+
+});
+
+
+
+router.post('/addnewworktime', async (req, res) => {
+  const { createDateOfUser, email, timeWorkObj } = req.body;
+  console.log('try to add a new time work ')
+  if (!createDateOfUser || !email || !timeWorkObj) {
+    res.send(responedList.infoInvalid);
+    return;
+  }
+  let user = await User.findOne({ email }).catch(err => responedList.DBError).then(doc => doc || responedList.NotExists);
+  if (user.err) {
+    res.send(user);
+    return;
+  }
+  else if (user.createDateOfUser !== createDateOfUser) {
+    console.log('not valid create user DAte', user.createDateOfUser, createDateOfUser)
+    res.send(responedList.infoInvalid);
+    return;
+  }
+
+  user.workTimes.unshift(timeWorkObj);
+
+  user.markModified('workTimes');
+
+  user.save(err => {
+    if (err) {
+      res.send(responedList.FaildSave);
+      return
+    }
+    res.send('good');
+  })
+
+
+});
+router.post('/restuserworktime', async (req, res) => {
+  const { createDateOfUser, email } = req.body;
+  console.log('try to add a new time work ')
+  if (!createDateOfUser || !email) {
+    res.send(responedList.infoInvalid);
+    return;
+  }
+  let user = await User.findOne({ email }).catch(err => responedList.DBError).then(doc => doc || responedList.NotExists);
+  if (user.err) {
+    res.send(user);
+    return;
+  }
+  else if (user.createDateOfUser !== createDateOfUser) {
+    console.log('not valid create user DAte', user.createDateOfUser, createDateOfUser)
+    res.send(responedList.infoInvalid);
+    return;
+  }
+
+  user.workTimes = [];
+
+  user.markModified('workTimes');
+
+  user.save(err => {
+    if (err) {
+      res.send(responedList.FaildSave);
+      return
+    }
+    res.send('good');
+  })
+
+});
+
+
+router.post('/changepassword', (req, res) => {
+  let { newPassword, oldPassword, email } = req.body;
+
+  if (!newPassword || !oldPassword || !email) {
+    res.send(responedList.infoInvalid);
+    return;
+  }
+
+
+
 
 
 });

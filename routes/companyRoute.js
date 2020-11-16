@@ -61,20 +61,39 @@ router.post('/createcompany', async (req, res) => {
 
 
 router.post('/getcompany', async (req, res) => {
-
+    console.log('get company')
     const { joinCode, email } = req.body;
 
     if (!joinCode || !email) {
         res.send(responedList.infoInvalid);
         return;
     }
-    const comapny = await Company.findOne({ joinCode }).catch(err => responedList.DBError).then(comapny => comapny);
-    if (comapny.err || !comapny || comapny.manager.email !== email) {
-        res.send(comapny.err ? comapny.err : responedList.NotExists);
+    const comapny = await Company.findOne({ joinCode }).catch(err => responedList.DBError).then(comapny => comapny || responedList.NotExists);
+    if (comapny.err || !comapny) {
+        if (comapny.manager) comapny.manager.email !== email ? res.send(responedList.NotExists) : res.send(comapny.err ? comapny.err : responedList.NotExists);
+        else res.send(comapny.err ? comapny.err : responedList.NotExists);
         return;
     }
     res.send(comapny);
 });
+
+
+
+router.post('/getexpoid', async (req, res) => {
+    const { email } = req.body;
+    if (!email) {
+        res.send(responedList.infoInvalid);
+        return
+    }
+
+    const user = await User.findOne({ email }).catch(err => responedList.DBError).then(doc => doc || responedList.NotExists);
+    if (user.err) {
+        res.send(user)
+        return
+    }
+    res.send(user.expoId)
+
+})
 
 
 

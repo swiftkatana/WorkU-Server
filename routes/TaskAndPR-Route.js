@@ -43,7 +43,6 @@ router.post("/addtasks", async (req, res) => {
     users.forEach(user => {
         user.tasks.processing[newTask._id] = newTask;
         user.markModified('tasks')
-        console.log(user)
         user.save(err => {
             if (err) {
                 res.send(responedList.FaildSave)
