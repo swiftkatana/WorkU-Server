@@ -1,4 +1,4 @@
-sconst express = require("express");
+const express = require("express");
 const bcrypt = require("bcrypt");
 const legit = require('legit');
 
@@ -47,7 +47,7 @@ router.post("/login", (req, res) => {
                 let err = await updateExpoId({ expoId, name: user.Company, email: user.email });
                 if (err.err) {
                   res.send(err);
-                  av                  return;
+                  return;
                 }
 
               }
@@ -409,18 +409,18 @@ router.post('/restuserworktime', async (req, res) => {
 });
 
 
-router.post('/changepassword', (req, res) => {
-  let { newPassword, oldPassword, email } = req.body;
+// router.post('/changepassword', (req, res) => {
+//   let { newPassword, oldPassword, email } = req.body;
 
-  if (!newPassword || !oldPassword || !email) {
-    res.send(responedList.infoInvalid);
-    return;
-  }
-
-
+//   if (!newPassword || !oldPassword || !email) {
+//     res.send(responedList.infoInvalid);
+//     return;
+//   }
 
 
 
-});
+
+
+// });
 
 module.exports = router;
