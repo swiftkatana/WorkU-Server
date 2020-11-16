@@ -131,8 +131,9 @@ router.delete("/leave", async (req, res, next) => {
 
 
 router.post('/updatepersonalreuqest', async (req, res) => {
-    const { _id, status, respond, email } = req.body;
-    if (!_id || !status || !respond || !email) {
+
+    const { _id, status, email } = req.body;
+    if (!_id || !status || !email) {
         res.send(responedList.infoInvalid);
         return;
     }
@@ -150,7 +151,7 @@ router.post('/updatepersonalreuqest', async (req, res) => {
         return;
     }
 
-    let newPersonalRequests = { ...user.personalRequests[_id], respond, status, };
+    let newPersonalRequests = { ...user.personalRequests[_id], status, };
 
 
 

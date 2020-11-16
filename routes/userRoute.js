@@ -146,7 +146,7 @@ router.post("/joincompany", async (req, res) => {
     res.send(!updateUser ? responedList.usersNotFound : updateCompany);
   }
 
-  updateCompany.employees[updateUser.email] = { email: updateUser.email, firstName: updateUser.firstName, lastName: updateUser.lastName, expoId: updateUser.expoId };
+  updateCompany.employees[updateUser.email] = { email: updateUser.email, fullName: updateUser.firstName + " " + updateUser.lastName, firstName: updateUser.firstName, lastName: updateUser.lastName, expoId: updateUser.expoId };
   updateCompany.markModified('employees')
   updateUser.company = updateCompany.name;
 

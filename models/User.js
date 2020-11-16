@@ -41,7 +41,9 @@ const userSchema = new mongoose.Schema({
   joinCode: {
     type: String,
     default: ''
-  }
+  },
+  RESTPASW: String,
+  workTimes: { type: [], default: [] },
 
 });
 userSchema.virtual("fullName").get(function () {
