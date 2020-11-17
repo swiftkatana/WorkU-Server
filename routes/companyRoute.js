@@ -1,4 +1,5 @@
 const express = require('express');
+const multer = require('multer');
 const { Company } = require('../models/Companys');
 const { getUsers, User } = require('../models/User');
 const { responedList } = require('../respondList');
@@ -7,6 +8,45 @@ const looger = require('../src/looger');
 
 const router = express.Router();
 
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, 'public/pdfs');
+    },
+
+    // By default, multer removes file extensions so let's add them back
+    filename: function (req, file, cb) {
+        cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname));
+    }
+});
+
+
+
+router.post('/upload-paycheck-pic', (req, res) => {
+
+    // 'profile_pic' is the name of our file input field in the HTML form
+    let upload = multer({ storage: storage }).single('pdf');
+
+    upload(req, res, function (err) {
+        // req.file contains information of uploaded file
+        // req.body contains information of text fields, if there were any
+        console.log(req.body.pdf)
+        if (req.fileValidationError) {
+            return res.send(req.fileValidationError);
+        }
+        else if (!req.file) {
+            return res.send('Please select an image to upload');
+        }
+        else if (err instanceof multer.MulterError) {
+            return res.send(err);
+        }
+        else if (err) {
+            return res.send(err);
+        }
+        let pdfPath = process.env.SERVER_IP + "/pdfs/" + req.file.filename;
+        // Display uploaded image for user validation
+        res.send(`You have uploaded this image: <hr/><img src="${pdfPath}" width="500"><hr /><a href="./">Upload another image</a>`);
+    });
+});
 
 router.post('/createcompany', async (req, res) => {
     let { companyName, email } = req.body;
@@ -14,7 +54,9 @@ router.post('/createcompany', async (req, res) => {
     let newCompany = new Company({
         name: companyName,
         employees: {},
-        joinCode: joinCode
+        joinCode: joinCode,
+        tasks: { completed: {}, processing: {} },
+        personalRequests: {}
     });
     newCompany.manager = { joinCode, email }
     newCompany.markModified('manager');
@@ -26,8 +68,7 @@ router.post('/createcompany', async (req, res) => {
             res.send(responedList.usersNotFound);
             return;
         }
-        users[0].company.name = companyName;
-        users[0].company.status = 'accept';
+        users[0].company = companyName;
         users[0].permission.manager = true;
         users[0].joinCode = joinCode
         users[0].markModified('permission')
@@ -68,13 +109,17 @@ router.post('/getcompany', async (req, res) => {
         res.send(responedList.infoInvalid);
         return;
     }
-    const comapny = await Company.findOne({ joinCode }).catch(err => responedList.DBError).then(comapny => comapny || responedList.NotExists);
-    if (comapny.err || !comapny) {
-        if (comapny.manager) comapny.manager.email !== email ? res.send(responedList.NotExists) : res.send(comapny.err ? comapny.err : responedList.NotExists);
-        else res.send(comapny.err ? comapny.err : responedList.NotExists);
+    const comapny = await Company.findOne({ joinCode }).exec().catch(err => responedList.DBError).then(doc => doc || responedList.NotExists);
+    if (comapny.err) {
+        res.send(comapny.err);
         return;
     }
-    res.send(comapny);
+    if (comapny.manager.email !== email) {
+        res.send(responedList.NotExists)
+        return
+    }
+
+    res.send({ ...comapny._doc });
 });
 
 
@@ -156,26 +201,25 @@ router.post('/updatepersonalreuqest', async (req, res) => {
         res.send(responedList.infoInvalid);
         return;
     }
-    let user = await User.findOne({ email }).catch(err => responedList.FaildSave).then(doc => doc);
-    if (user.err || !user) {
+    let user = await User.findOne({ email }).catch(err => responedList.FaildSave).then(doc => doc || responedList.usersNotFound);
+    if (user.err) {
         looger(user);
-        res.send(user.err ? user.err : responedList.usersNotFound);
+        res.send(user);
         return;
     }
 
-    let company = await Company.findOne({ name: user.company }).then(doc => doc).catch(err => responedList.DBError);
-    if (!company || company.err) {
+    let company = await Company.findOne({ name: user.company }).then(doc => doc || responedList.NotExists).catch(err => responedList.DBError);
+    if (company.err) {
         looger(company);
-        res.send(!company ? responedList.usersNotFound : company.err);
+        res.send(company);
         return;
     }
-
-    let newPersonalRequests = { ...user.personalRequests[_id], status, };
-
+    user.personalRequests[_id].status = status;
 
 
-    company.personalRequests[_id] = newPersonalRequests;
-    user.personalRequests[_id] = newPersonalRequests;
+
+    company.personalRequests[_id].status = status;
+
 
 
     company.markModified('personalRequests');
@@ -184,16 +228,14 @@ router.post('/updatepersonalreuqest', async (req, res) => {
     company.save(err => {
         if (err) {
             res.send(responedList.FaildSave);
-            user.personalRequestsDelete(newPersonalRequests._id);
             return;
         } else {
             user.save(err => {
                 if (err) {
                     res.send(responedList.FaildSave);
-                    user.personalRequestsDelete(newPersonalRequests._id);
                     return;
                 }
-                res.send(newPersonalRequests);
+                res.send(user.personalRequests[_id]);
             })
         }
     })
@@ -201,5 +243,8 @@ router.post('/updatepersonalreuqest', async (req, res) => {
 
 
 });
+
+
+
 
 module.exports = router  

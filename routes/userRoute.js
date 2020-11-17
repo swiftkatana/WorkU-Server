@@ -128,23 +128,27 @@ router.post('/updatetask', async (req, res) => {
     res.send(responedList.infoInvalid)
     return;
   }
-  const user = await User.findOne({ email }).catch(err => responedList.DBError).then(doc => doc);
-  if (!user || user.err) {
-    res.send(user ? user.err : responedList.usersNotFound);
+  const user = await User.findOne({ email }).catch(err => responedList.DBError).then(doc => doc || responedList.usersNotFound);
+  if (user.err) {
+    res.send(user.err);
     return;
   }
-  const company = await Company.findOne({ name: user.company }).catch(err => responedList.DBError).then(doc => doc);
-  if (!company || company.err) {
-    res.send(company ? company.err : responedList.NotExists);
+  const company = await Company.findOne({ name: user.company }).catch(err => responedList.DBError).then(doc => doc || responedList.NotExists);
+  if (company.err) {
+    res.send(company.err);
     return;
   }
 
   let updateTask = user.tasks.processing[_id];
 
+  if (!updateTask) {
+    res.send(responedList.NotExists);
+    return
+  }
+
   comment ? updateTask.comments.push(comment) : null;
 
   if (complete) {
-    updateTask.status = 'completed'
     delete user.tasks.processing[updateTask._id]
     delete company.tasks.processing[updateTask._id]
     user.tasks.completed[updateTask._id] = updateTask;
@@ -184,6 +188,7 @@ router.post('/updatetask', async (req, res) => {
 
 
   }
+  console.log('update task');
   res.send(updateTask);
 
 

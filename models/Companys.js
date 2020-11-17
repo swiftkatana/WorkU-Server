@@ -1,6 +1,7 @@
 const e = require("express");
 const mongoose = require("mongoose");
 const { responedList } = require("../respondList");
+const personalRequestSchema = require('../models/personalRequest')
 
 const companySchema = new mongoose.Schema({
     name: {
@@ -14,8 +15,8 @@ const companySchema = new mongoose.Schema({
         default: { completed: {}, processing: {} }
     },
     personalRequests: {
-        type: {},
-        default: { completed: {}, processing: {} }
+        type: { personalRequestSchema },
+        default: {}
     }, manager: {
         type: {},
         default: {}
@@ -61,6 +62,7 @@ companySchema.method('removeEmployees', function (arremployees) {
     });
 
 })
+
 
 
 exports.companySchema = companySchema;
