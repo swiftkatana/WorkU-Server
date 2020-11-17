@@ -1,126 +1,16 @@
 const express = require("express");
-const bcrypt = require("bcrypt");
-const legit = require('legit');
+path = require('path')
 
 const { User } = require("../models/User");
 const loger = require("../src/looger");
-const { Company, addEmployeeToWaitingList, updateExpoId } = require("../models/Companys");
+const { Company } = require("../models/Companys");
 const { responedList } = require("../respondList");
 const { PersonalRequest } = require("../models/personalRequest");
 const looger = require("../src/looger");
-const saltPassword = 10;
 const router = express.Router();
 
-router.post("/login", (req, res) => {
-  const { email, password, expoId } = req.body;
-  if (!email || !password) {
-
-    res.send(responedList.InfoUnvalid)
-    loger('miss info been send to the login api', responedList.InfoUnvalid);
-    return;
-  }
-  User.findOne({ email: email })
-    .catch(err => {
-      loger(err);
-
-      res.send(responedList.DBError);
-      return;
-    })
-    .then(user => {
-      if (!user) {
-
-        res.send(responedList.usersNotFound);
-        loger('cant find user on login ' + email);
-        return;
-      }
-      bcrypt.compare(password, user.password, async (err, login) => {
-        if (err) {
-          loger("password not right\n" + err);
-
-          res.send(responedList.InfoUnvalid);
-          return;
-        } else {
-          if (login) {
-            if (user.expoId !== expoId) {
-              console.log('new expo id')
-              if (user.Company) {
-                let err = await updateExpoId({ expoId, name: user.Company, email: user.email });
-                if (err.err) {
-                  res.send(err);
-                  return;
-                }
-
-              }
-              user.expoId = expoId;
-              user.markModified('expoId')
-              user.save(err => {
-                if (err) {
-                  res.send(responedList.FaildSave);
-                  return;
-                }
-              })
-
-            }
-            loger("someone login to our web sucssesfull email: " + email);
-            res.send(user.filterUser());
-            return;
-          } else {
-            loger(req.ip + " just try login but not! password not good  :  " + email);
-
-            res.send(responedList.InfoUnvalid);
-            return;
-          }
-        }
-      });
 
 
-    })
-});
-
-router.post("/register", async (req, res) => {
-  const { email, password, firstName, lastName } = req.body;
-  if (!email || !password || !firstName || !lastName) {
-    loger('miss info been send to the register api');
-
-    res.send(responedList.InfoUnvalid);
-    return;
-  }
-  // check email is legit 
-  const legitEmail = await legit(email)
-  if (!legitEmail.isValid) {
-    loger('email not valid');
-
-    res.send(responedList.emailNotExistsL);
-    return;
-  }
-  bcrypt.hash(password, saltPassword, async (err, hash) => {
-    if (err) {
-      loger("err on register" + err);
-
-      res.send(responedList.FaildSave);
-      return;
-    }
-    const user = new User({
-      email,
-      password: hash,
-      firstName,
-      lastName,
-    });
-    {
-      user.save((err) => {
-        if (err) {
-
-          res.send(err.code === 11000 ? responedList.UserIsAlreadyCreated : responedList.FaildSave);
-          loger("someone try to register but got error : " + err);
-          return;
-        } else {
-          loger("someone register to our web now this email : " + email);
-          res.send(user.filterUser());
-        }
-      });
-    }
-  });
-});
 
 router.post("/joincompany", async (req, res) => {
   loger(' try join comepany')
@@ -409,60 +299,5 @@ router.post('/restuserworktime', async (req, res) => {
 });
 
 
-router.post('/changepassword', async (req, res) => {
-  let { newPassword, oldPassword, email } = req.body;
-
-  if (!newPassword || !oldPassword || !email) {
-    res.send(responedList.infoInvalid);
-    return;
-  }
-
-  let user = await User.findOne({ email }).catch(err => responedList.DBError).then(doc => doc || responedList.usersNotFound)
-  if (user.err) {
-    res.send(user);
-    return;
-  }
-
-  bcrypt.compare(oldPassword, user.password, (err, login) => {
-    if (err) {
-      loger("password not right\n" + err);
-      res.send(responedList.infoInvalid);
-      return;
-    } else {
-      if (!login) {
-        loger(req.ip + " just try login but not! password not good  :  " + email);
-        res.send(responedList.InfoUnvalid);
-        return;
-      }
-
-      bcrypt.hash(newPassword, saltPassword, (err, hash) => {
-        if (err) {
-          loger("err on register" + err);
-          res.send(responedList.FaildSave);
-          return;
-        }
-
-        user.password = hash;
-        user.save((err) => {
-          if (err) {
-            res.send(responedList.FaildSave);
-            loger("someone try to register but got error : " + err);
-            return;
-          } else {
-            loger("someone change to our web now this email : " + email);
-            res.send('good');
-          }
-        });
-
-      });
-
-
-    }
-  });
-
-
-
-
-});
 
 module.exports = router;
