@@ -280,8 +280,35 @@ router.post('/getworktimes', async (req, res) => {
         res.send(responedList.infoInvalid)
         return
     }
-    console.log(user.workTimes)
+
     res.send(user.workTimes);
+
+
+})
+router.post('/getshiftsworkscom', async (req, res) => {
+    let { email } = req.body;
+    console.log('try to get works time')
+    if (!email) {
+        console.log('error1')
+        res.send(responedList.infoInvalid);
+        return;
+    }
+    const user = await User.findOne({ email }).catch(err => responedList.DBError).then(doc => doc || responedList.NotExists);
+    if (user.err) {
+        console.log('error2')
+
+        res.send(responedList.infoInvalid)
+        return
+    }
+
+    const company = await Company.findOne({ name: user.company }).catch(err => responedList.DBError).then(doc => doc || responedList.NotExists);
+    if (company.err) {
+        console.log('errpr')
+        res.send(company);
+        return;
+    }
+
+    res.send(company.shifts);
 
 
 })
