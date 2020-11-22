@@ -56,52 +56,5 @@ router.post("/addtasks", async (req, res) => {
     res.send(newTask);
 });
 
-router.post('/sendshiftsforemployee', async (req, res) => {
-
-    const { shift, email } = req.body;
-
-    if (!shift || !email) {
-        res.send(responedList.infoInvalid);
-        return;
-    }
-    let user = User.findOne({ email }).catch(err => responedList.DBError).then(docs => !docs ? responedList.userNotFound : docs);
-    if (user.err) {
-        res.send(user)
-        return;
-    }
-
-    let company = await Company.findOne({ name: user.company }).catch(err => responedList.DBError).then(company => company || responedList.NotExists);
-    if (company.err) {
-        looger(company)
-        res.send(company);
-        return
-    }
-    company.shift = shift;
-    company.markModified('shift');
-    company.save(err => {
-        if (err) {
-            res.send(responedList.FaildSave);
-            return;
-        }
-        if (user.shifts.length >= 2) {
-            user.shifts.shift()
-            user.shifts.push(shift);
-        }
-        user.shifts.push(shift);
-        user.markModified('shifts');
-        user.save(err => {
-            if (err) {
-                faildToSave = true;
-                res.send(responedList.FaildSave);
-                return;
-            }
-            res.send('good');
-
-        })
-
-    })
-
-});
-
 
 module.exports = router

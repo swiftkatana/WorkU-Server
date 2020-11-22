@@ -21,6 +21,48 @@ const storage = multer.diskStorage({
 });
 
 
+router.post('/sendshiftsforemployee', async (req, res) => {
+    console.log('send shift')
+    const { shift, email } = req.body;
+
+    if (!shift || !email) {
+        console.log('error1', user)
+        res.send(responedList.infoInvalid);
+        return;
+    }
+    let user = await User.findOne({ email }).catch(err => responedList.DBError).then(docs => docs || responedList.userNotFound);
+    if (user.err) {
+        console.log('error2', user)
+
+        res.send(user)
+        return;
+    }
+    console.log(user)
+    console.log(user.company)
+    let company = await Company.findOne({ name: user.company }).catch(err => responedList.DBError).then(company => company || responedList.NotExists);
+    if (company.err) {
+        console.log('error3', company)
+        res.send(company);
+        return
+    }
+    if (company.shifts.length >= 2) {
+        company.shifts.shift()
+    }
+    company.shifts.push(shift);
+
+    company.markModified('shifts');
+    company.save(err => {
+        if (err) {
+            res.send(responedList.FaildSave);
+            return;
+        }
+
+
+    });
+    return company.shifts
+
+});
+
 
 router.post('/uploadaudio', (req, res) => {
     console.log('upload audios');
