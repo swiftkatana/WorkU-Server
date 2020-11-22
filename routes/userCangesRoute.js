@@ -24,6 +24,7 @@ var transporter = nodemailer.createTransport({
 
 
 router.post("/login", (req, res) => {
+    console.log('login')
     const { email, password, expoId } = req.body;
     if (!email || !password) {
 
