@@ -13,7 +13,12 @@ const companySchema = new mongoose.Schema({
     tasks: {
         type: {},
         default: { completed: {}, processing: {} }
+    }
+    , shift: {
+        type: {},
+        default: {}
     },
+
     personalRequests: {
         type: { personalRequestSchema },
         default: {}

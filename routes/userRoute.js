@@ -27,20 +27,21 @@ router.post("/joincompany", async (req, res) => {
   updateCompany = await Company.findOne({ joinCode: code }).catch(err => responedList.DBError).then(company => company || responedList.NotExists);
   if (updateCompany.err) {
     loger('error2')
-    res.send(updateCompany.err);
+    res.send(updateCompany);
     return;
   }
   //get the user
   updateUser = await User.findOne({ email }).catch(err => responedList.DBError).then(user => user || responedList.usersNotFound);
   if (updateUser.err) {
     loger('error3')
-    res.send(updateUser.err);
+    res.send(updateUser);
     return
   }
-
-  updateCompany.employees[updateUser.email] = { email: updateUser.email, fullName: updateUser.firstName + " " + updateUser.lastName, firstName: updateUser.firstName, lastName: updateUser.lastName, expoId: updateUser.expoId };
+  updateCompany.employees[updateUser.email] = { imageProfile: updateUser.imageProfile, phone: updateUser.phone, email: updateUser.email, fullName: updateUser.firstName + " " + updateUser.lastName, firstName: updateUser.firstName, lastName: updateUser.lastName, expoId: updateUser.expoId };
   updateCompany.markModified('employees')
   updateUser.company = updateCompany.name;
+  console.log(updateCompany.manager.email)
+  updateUser.managerEmail = updateCompany.manager.email;
 
   console.log(updateUser)
   updateCompany.save(err => {
@@ -66,29 +67,79 @@ router.post("/joincompany", async (req, res) => {
 
 })
 
+router.post('/uploadshifts', async (req, res) => {
+
+
+  console.log('someone try upload a shift');
+  const { shifts, email } = req.body;
+  if (!shifts || !email) {
+    console.log('er1')
+    res.send(responedList.infoInvalid);
+    return;
+  }
+  const user = await User.findOne({ email }).catch(err => responedList.DBError).then(doc => doc || responedList.usersNotFound);
+  if (user.err) {
+
+    res.send(user);
+    return;
+  }
+  const company = await Company.findOne({ name: user.company }).catch(err => responedList.DBError).then(doc => doc || responedList.NotExists);
+  if (company.err) {
+    res.send(company);
+    return;
+  }
+  user.pendingShift = shifts;
+  company.employees[user.email].shift = shifts;
+  company.markModified('employees');
+  user.markModified('pendingShift');
+
+  company.save(err => {
+    if (err) {
+      res.send(responedList.FaildSave);
+      return
+    }
+    user.save(err => {
+      if (err) {
+
+        res.send(responedList.FaildSave);
+        return;
+      }
+      res.send(shifts)
+
+    })
+  })
+
+
+
+
+
+});
+
+
+
 
 router.post("/personalreuqest", async (req, res) => {
   // this route need to get sender(who that create the task) as a obj example{ firstName:" example" , email:"example",} ;
   // and array of employees example [{email:example1@example.com,fullName:"example1 example1"},...]
   let { type, body, fullName, email } = req.body
 
-  if (!type || !body || !fullName || !email) {
+  if (!type || !fullName || !email) {
     res.send(responedList.infoInvalid);
     return;
   }
 
-  let user = await User.findOne({ email }).then((user) => user).catch(err => responedList.DBError);
-  if (!user || user.err) {
+  let user = await User.findOne({ email }).then((user) => user || responedList.usersNotFound).catch(err => responedList.DBError);
+  if (user.err) {
     looger("didnt find user on the add new Task Route");
-    res.send(!user ? responedList.usersNotFound : responedList.DBError);
+    res.send(user);
     return;
   }
   console.log(user)
 
-  let company = await Company.findOne({ name: user.company }).then(doc => doc).catch(err => responedList.DBError);
-  if (!company || company.err) {
+  let company = await Company.findOne({ name: user.company }).then(doc => doc || responedList.NotExists).catch(err => responedList.DBError);
+  if (company.err) {
     looger(company);
-    res.send(!company ? responedList.usersNotFound : responedList.DBError);
+    res.send(company);
     return;
   }
 
@@ -121,27 +172,64 @@ router.post("/personalreuqest", async (req, res) => {
 
 });
 
+router.post('/updatestyleuser', async (req, res) => {
+  let { styles, email } = req.body
+  if (!styles) {
+    res.send(responedList.infoInvalid);
+    return;
+  }
+
+
+  let user = await User.findOne({ email }).then((user) => user || responedList.usersNotFound).catch(err => responedList.DBError);
+  if (user.err) {
+    looger("didnt find user on the add new Task Route");
+    res.send(user);
+    return;
+  }
+  user.styles = { ...user.styles, ...styles };
+  user.markModified('styles');
+
+  user.save(err => {
+    if (err) {
+      res.send(responedList.FaildSave);
+      return
+    }
+    res.send(styles);
+  })
+
+
+});
+
 router.post('/updatetask', async (req, res) => {
 
-  let { _id, comment, email, complete } = req.body;
+  let { _id, comment, email, complete, status } = req.body;
   if (!_id || !email) {
+    console.log('errpr ')
     res.send(responedList.infoInvalid)
     return;
   }
   const user = await User.findOne({ email }).catch(err => responedList.DBError).then(doc => doc || responedList.usersNotFound);
   if (user.err) {
-    res.send(user.err);
+    console.log('error')
+    res.send(user);
     return;
   }
   const company = await Company.findOne({ name: user.company }).catch(err => responedList.DBError).then(doc => doc || responedList.NotExists);
   if (company.err) {
-    res.send(company.err);
+    console.log('errpr')
+    res.send(company);
     return;
   }
 
-  let updateTask = user.tasks.processing[_id];
-
+  let updateTask = user.tasks.processing[_id] || user.tasks.completed[_id];
   if (!updateTask) {
+    console.log('task not exi')
+    res.send(responedList.infoInvalid);
+    return
+  }
+  updateTask.status = status || '';
+  if (!updateTask) {
+    console.log('err ')
     res.send(responedList.NotExists);
     return
   }

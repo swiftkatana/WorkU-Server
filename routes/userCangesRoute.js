@@ -27,8 +27,8 @@ router.post("/login", (req, res) => {
     const { email, password, expoId } = req.body;
     if (!email || !password) {
 
-        res.send(responedList.InfoUnvalid)
-        loger('miss info been send to the login api', responedList.InfoUnvalid);
+        res.send(responedList.infoInvalid)
+        loger('miss info been send to the login api', responedList.infoInvalid);
         return;
     }
     User.findOne({ email: email })
@@ -48,8 +48,7 @@ router.post("/login", (req, res) => {
             bcrypt.compare(password, user.password, async (err, login) => {
                 if (err) {
                     loger("password not right\n" + err);
-
-                    res.send(responedList.InfoUnvalid);
+                    res.send(responedList.infoInvalid);
                     return;
                 } else {
                     if (login) {
@@ -79,7 +78,7 @@ router.post("/login", (req, res) => {
                     } else {
                         loger(req.ip + " just try login but not! password not good  :  " + email);
 
-                        res.send(responedList.InfoUnvalid);
+                        res.send(responedList.infoInvalid);
                         return;
                     }
                 }
@@ -90,11 +89,11 @@ router.post("/login", (req, res) => {
 });
 
 router.post("/register", async (req, res) => {
-    const { email, password, firstName, lastName } = req.body;
-    if (!email || !password || !firstName || !lastName) {
+    const { email, password, firstName, lastName, phone } = req.body;
+    if (!email || !password || !firstName || !lastName, !phone) {
         loger('miss info been send to the register api');
 
-        res.send(responedList.InfoUnvalid);
+        res.send(responedList.infoInvalid);
         return;
     }
     // check email is legit 
@@ -108,7 +107,6 @@ router.post("/register", async (req, res) => {
     bcrypt.hash(password, saltPassword, async (err, hash) => {
         if (err) {
             loger("err on register" + err);
-
             res.send(responedList.FaildSave);
             return;
         }
@@ -116,7 +114,7 @@ router.post("/register", async (req, res) => {
             email,
             password: hash,
             firstName,
-            lastName,
+            lastName, phone
         });
         {
             user.save((err) => {
@@ -157,15 +155,15 @@ router.post('/changepassword', async (req, res) => {
             return;
         } else {
             if (!login) {
-                loger(req.ip + " just try login but not! password not good  :  " + email);
-                res.send(responedList.InfoUnvalid);
+                loger(req.ip + " just try change password but not! password not good  :  " + email);
+                res.send(responedList.infoInvalid);
                 return;
             }
 
             bcrypt.hash(newPassword, saltPassword, (err, hash) => {
                 if (err) {
-                    loger("err on register" + err);
-                    res.send(responedList.FaildSave);
+                    loger("err on change password" + err);
+                    res.send(responedList.infoInvalid);
                     return;
                 }
 
@@ -173,10 +171,10 @@ router.post('/changepassword', async (req, res) => {
                 user.save((err) => {
                     if (err) {
                         res.send(responedList.FaildSave);
-                        loger("someone try to register but got error : " + err);
+                        loger("someone try to change password but got error : " + err);
                         return;
                     } else {
-                        loger("someone change to our web now this email : " + email);
+                        loger("someone change  is password now this email : " + email);
                         res.send('good');
                     }
                 });
@@ -194,6 +192,7 @@ router.post('/changepassword', async (req, res) => {
 
 
 router.post('/restpasswordrestcode', async (req, res) => {
+    console.log('rest password with a code')
     let { email, restCode, newPassword } = req.body;
 
     if (!email || !restCode || !newPassword) {
@@ -226,7 +225,7 @@ router.post('/restpasswordrestcode', async (req, res) => {
                 res.send(responedList.FaildSave);
                 return
             }
-            res.send('good');
+            res.send(user);
         })
 
 

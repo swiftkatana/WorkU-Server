@@ -7,6 +7,7 @@ const userSchema = new mongoose.Schema({
     type: String,
     default: "",
   },
+  managerEmail: String,
   createDateOfUser: { type: String, default: Date.now().toString() },
   firstName: String,
   lastName: String,
@@ -38,13 +39,16 @@ const userSchema = new mongoose.Schema({
     type: String,
     default: ''
   },
+  shifts: [],
+  pendingShift: {},
   joinCode: {
     type: String,
     default: ''
   },
+  phone: String,
   RESTPASW: String,
   workTimes: { type: [], default: [] },
-
+  styles: {},
 });
 userSchema.virtual("fullName").get(function () {
   return this.firstName + " " + this.lastName;

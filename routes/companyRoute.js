@@ -1,7 +1,8 @@
 const express = require('express');
 const multer = require('multer');
+const { AudioModel } = require('../models/audio');
 const { Company } = require('../models/Companys');
-const { getUsers, User } = require('../models/User');
+const { User } = require('../models/User');
 const { responedList } = require('../respondList');
 const looger = require('../src/looger');
 
@@ -10,7 +11,7 @@ const router = express.Router();
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, 'public/pdfs');
+        cb(null, 'public/audio');
     },
 
     // By default, multer removes file extensions so let's add them back
@@ -21,31 +22,158 @@ const storage = multer.diskStorage({
 
 
 
-router.post('/upload-paycheck-pic', (req, res) => {
+router.post('/uploadaudio', (req, res) => {
+    console.log('upload audios');
 
     // 'profile_pic' is the name of our file input field in the HTML form
-    let upload = multer({ storage: storage }).single('pdf');
+    let upload = multer({ storage: storage }).single('audio');
 
-    upload(req, res, function (err) {
+    upload(req, res, async function (err) {
+
+        let { email, _id, fullName, to, readComOrUser } = req.body;
+        if (!email || !_id) {
+            res.send(responedList.infoInvalid);
+            return;
+        }
         // req.file contains information of uploaded file
         // req.body contains information of text fields, if there were any
-        console.log(req.body.pdf)
         if (req.fileValidationError) {
             return res.send(req.fileValidationError);
         }
         else if (!req.file) {
-            return res.send('Please select an image to upload');
+            return res.send(responedList.infoInvalid);
         }
         else if (err instanceof multer.MulterError) {
-            return res.send(err);
+            return res.send(responedList.infoInvalid);
         }
         else if (err) {
-            return res.send(err);
+            return res.send(responedList.infoInvalid);
         }
-        let pdfPath = process.env.SERVER_IP + "/pdfs/" + req.file.filename;
-        // Display uploaded image for user validation
-        res.send(`You have uploaded this image: <hr/><img src="${pdfPath}" width="500"><hr /><a href="./">Upload another image</a>`);
+        let audioPath = process.env.SERVER_IP + "/audio/" + req.file.filename;
+        let audio = new AudioModel({ email, url: audioPath, fullName, taskId: _id });
+        const user = await User.findOne({ email: to }).catch(err => responedList.DBError).then(doc => doc || responedList.usersNotFound);
+        if (user.err) {
+            console.log('error')
+            res.send(user);
+            return;
+        }
+        const company = await Company.findOne({ name: user.company }).catch(err => responedList.DBError).then(doc => doc || responedList.NotExists);
+        if (company.err) {
+            console.log('errpr')
+            res.send(company);
+            return;
+        }
+
+        let updateTask = { ...company.tasks.processing[_id] };
+
+
+        if (!updateTask) {
+            console.log('err ')
+            res.send(responedList.NotExists);
+            return;
+        }
+        let length = company.tasks.processing[updateTask._id].audios.length;
+        if (readComOrUser === 'manager') {
+            console.log('man')
+            updateTask.read = true;
+            updateTask.audios.push(audio)
+            updateTask.audios[length].read = true;
+            company.tasks.processing[updateTask._id] = { ...updateTask }
+            company.markModified('tasks.processing')
+            //--------------------------------------------------------------------
+            updateTask.read = false;
+            updateTask.audios[length].read = false;
+            user.tasks.processing[updateTask._id] = { ...updateTask }
+
+            user.markModified('tasks.processing')
+        } else {
+            console.log('emp')
+            updateTask.read = true;
+            updateTask.audios.push(audio)
+            updateTask.audios[length].read = true;
+            user.tasks.processing[updateTask._id] = { ...updateTask }
+            user.markModified('tasks.processing')
+            //-------------------------------------------------------------------
+            updateTask.read = false;
+            updateTask.read = false;
+            company.tasks.processing[updateTask._id] = { ...updateTask }
+            company.markModified('tasks.processing')
+        }
+
+
+
+
+        company.markModified('tasks');
+        user.markModified('tasks');
+
+
+        company.save(err => {
+            if (err) {
+                res.send(responedList.FaildSave);
+                return;
+            }
+            user.save(err => {
+                if (err) {
+                    res.send(responedList.FaildSave);
+                    return;
+                }
+
+            })
+        })
+
+
+
+        res.send(readComOrUser === 'manager' ? company.tasks.processing[updateTask._id].audios[company.tasks.processing[updateTask._id].audios.length - 1] : user.tasks.processing[updateTask._id].audios[company.tasks.processing[updateTask._id].audios.length - 1]);
     });
+});
+
+router.post('/readTaskUpdate', async (req, res) => {
+    const { audio, email, read } = req.body;
+
+    if (!email) {
+        res.send(responedList.infoInvalid);
+        return;
+    }
+
+    const user = await User.findOne({ email }).catch(err => responedList.DBError).then(doc => doc || responedList.NotExists);
+    if (user.err) {
+        console.log('errpr')
+        res.send(user);
+        return;
+    }
+
+    const company = await Company.findOne({ name: user.company }).catch(err => responedList.DBError).then(doc => doc || responedList.NotExists);
+    if (company.err) {
+        console.log('errpr')
+        res.send(company);
+        return;
+    }
+    if (read.task) {
+        user.tasks.processing[UupdateTask._id].read = true;
+        company.tasks.processing[UupdateTask._id].read = true;
+
+    }
+    if (audio) {
+        if (read.audio.comapny) {
+            company.tasks.processing[UupdateTask._id].audios.forEach(au => {
+                if (au.url === audio.url) {
+                    au.read = true;
+                }
+            })
+
+        } else {
+            user.tasks.processing[UupdateTask._id].audios.forEach(au => {
+                if (au.url === audio.url) {
+                    au.read = true;
+                }
+            })
+
+        }
+
+    }
+
+
+
 });
 
 router.post('/createcompany', async (req, res) => {
@@ -58,67 +186,84 @@ router.post('/createcompany', async (req, res) => {
         tasks: { completed: {}, processing: {} },
         personalRequests: {}
     });
-    newCompany.manager = { joinCode, email }
+
+    let user = await User.findOne({ email: email }).catch(err => responedList.DBError).then(doc => doc || responedList.usersNotFound);
+    if (user.err) {
+        res.send(user);
+        return;
+    }
+    newCompany.manager = { joinCode, email, imageProfile: user.imageProfile, phone: user.phone, email: user.email, fullName: user.firstName + " " + user.lastName, firstName: user.firstName, lastName: user.lastName, expoId: user.expoId }
     newCompany.markModified('manager');
-    getUsers({ email: email }).catch(err => {
-        res.send(responedList.DBError)
-        return false
-    }).then(users => {
-        if (!users[0]) {
-            res.send(responedList.usersNotFound);
-            return;
+    user.company = companyName;
+    user.permission.manager = true;
+    user.joinCode = joinCode
+    user.markModified('permission')
+    user.markModified('company')
+    user.markModified('joinCode')
+    user.role = 'manager';
+    newCompany.save(err => {
+        if (err) {
+            looger(err.message)
+            res.send(err.code === 11000 ? responedList.isInUse : responedList.FaildSave)
+            return
+        } else {
+            user.save(err => {
+                if (err) {
+                    newCompany.remove();
+                    looger(err.message)
+                    res.send(responedList.FaildSave)
+                } else {
+                    looger('someone  create a company')
+                    res.send({ ...newCompany._doc })
+                }
+            });
         }
-        users[0].company = companyName;
-        users[0].permission.manager = true;
-        users[0].joinCode = joinCode
-        users[0].markModified('permission')
-        users[0].markModified('company')
-        users[0].markModified('joinCode')
-        users[0].role = 'manager';
-        newCompany.save(err => {
-            if (err) {
-                looger(err.message)
-                res.send(err.code === 11000 ? responedList.isInUse : responedList.FaildSave)
-                return
-            } else {
-                users[0].save(err => {
-                    if (err) {
-                        newCompany.remove();
-                        looger(err.message)
-                        res.send(responedList.FaildSave)
-                    } else {
-                        looger('someone  create a company')
-                        res.send(joinCode)
-                    }
-                });
-            }
 
-        });
-
-    })
-
+    });
 
 });
 
-
-router.post('/getcompany', async (req, res) => {
-    console.log('get company')
-    const { joinCode, email } = req.body;
-
-    if (!joinCode || !email) {
+router.post('/getworktimes', async (req, res) => {
+    let { email } = req.body;
+    console.log('try to get works time')
+    if (!email) {
+        console.log('error1')
         res.send(responedList.infoInvalid);
         return;
     }
-    const comapny = await Company.findOne({ joinCode }).exec().catch(err => responedList.DBError).then(doc => doc || responedList.NotExists);
+    const user = await User.findOne({ email }).catch(err => responedList.DBError).then(doc => doc || responedList.NotExists);
+    if (user.err) {
+        console.log('error2')
+
+        res.send(responedList.infoInvalid)
+        return
+    }
+    console.log(user.workTimes)
+    res.send(user.workTimes);
+
+
+})
+
+
+
+router.post('/getcompany', async (req, res) => {
+    const { joinCode, email, comapnyName } = req.body;
+
+    if (!email) {
+        res.send(responedList.infoInvalid);
+        return;
+    }
+    let filter = joinCode ? { joinCode } : { name: comapnyName }
+    const comapny = await Company.findOne(filter).exec().catch(err => responedList.DBError).then(doc => doc || responedList.NotExists);
     if (comapny.err) {
         res.send(comapny.err);
         return;
     }
-    if (comapny.manager.email !== email) {
+    if (comapny.manager.email !== email && !comapny.employees[email]) {
         res.send(responedList.NotExists)
         return
     }
-
+    console.log('get company')
     res.send({ ...comapny._doc });
 });
 
@@ -127,15 +272,16 @@ router.post('/getcompany', async (req, res) => {
 router.post('/getexpoid', async (req, res) => {
     const { email } = req.body;
     if (!email) {
-        res.send(responedList.infoInvalid);
+        res.send("");
         return
     }
 
     const user = await User.findOne({ email }).catch(err => responedList.DBError).then(doc => doc || responedList.NotExists);
     if (user.err) {
-        res.send(user)
+        res.send("")
         return
     }
+    console.log('someone ask this expo id', user.expoId)
     res.send(user.expoId)
 
 })

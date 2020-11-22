@@ -1,7 +1,7 @@
 const express = require("express");
 const { Company } = require("../models/Companys");
 const { Task } = require("../models/Task");
-const { User, getUsers } = require("../models/User");
+const { User, getuser } = require("../models/User");
 const { responedList } = require('../respondList');
 const looger = require("../src/looger");
 const router = require('./userRoute');
@@ -16,22 +16,23 @@ router.post("/addtasks", async (req, res) => {
         return
     }
     looger('try to add task')
-    let users = await User.find({ email: { $in: employees } }).catch(err => responedList.DBError).then(users => users);
-    if (users.length !== employees.length || !users || users.err || !users[0].company) {
-        looger(users ? users : responedList.usersNotFound)
-        res.send(!users.err ? responedList.usersNotFound : users.err);
+    let user = await User.find({ email: { $in: employees } }).catch(err => responedList.DBError).then(user => user);
+    if (user.length !== employees.length || !user || user.err || !user[0].company) {
+        looger(user ? user : responedList.userNotFound)
+        res.send(!user.err ? responedList.userNotFound : user.err);
         return
     }
-    let company = await Company.findOne({ name: users[0].company }).catch(err => responedList.DBError).then(company => company);
+    let company = await Company.findOne({ name: user[0].company }).catch(err => responedList.DBError).then(company => company);
     if (!company || company.err) {
         looger(company)
-        res.send(!company.err ? responedList.usersNotFound : company.err);
+        res.send(!company.err ? responedList.userNotFound : company.err);
         return
     }
     let newTask = new Task({
-        title: task.title, description: task.description, priority: task.priority
+        title: task.title, description: task.description || 'def', priority: task.priority, audios: [], employee: employees[0], fullName: user[0].fullName
     });
     company.tasks.processing[newTask._id] = newTask;
+    company.tasks.processing[newTask._id].read = true
     company.markModified('tasks');
     company.save(err => {
         if (err) {
@@ -40,8 +41,9 @@ router.post("/addtasks", async (req, res) => {
             return
         }
     });
-    users.forEach(user => {
+    user.forEach(user => {
         user.tasks.processing[newTask._id] = newTask;
+        user.tasks.processing[newTask._id].read = false;
         user.markModified('tasks')
         user.save(err => {
             if (err) {
@@ -54,7 +56,52 @@ router.post("/addtasks", async (req, res) => {
     res.send(newTask);
 });
 
+router.post('/sendshiftsforemployee', async (req, res) => {
 
+    const { shift, email } = req.body;
+
+    if (!shift || !email) {
+        res.send(responedList.infoInvalid);
+        return;
+    }
+    let user = User.findOne({ email }).catch(err => responedList.DBError).then(docs => !docs ? responedList.userNotFound : docs);
+    if (user.err) {
+        res.send(user)
+        return;
+    }
+
+    let company = await Company.findOne({ name: user.company }).catch(err => responedList.DBError).then(company => company || responedList.NotExists);
+    if (company.err) {
+        looger(company)
+        res.send(company);
+        return
+    }
+    company.shift = shift;
+    company.markModified('shift');
+    company.save(err => {
+        if (err) {
+            res.send(responedList.FaildSave);
+            return;
+        }
+        if (user.shifts.length >= 2) {
+            user.shifts.shift()
+            user.shifts.push(shift);
+        }
+        user.shifts.push(shift);
+        user.markModified('shifts');
+        user.save(err => {
+            if (err) {
+                faildToSave = true;
+                res.send(responedList.FaildSave);
+                return;
+            }
+            res.send('good');
+
+        })
+
+    })
+
+});
 
 
 module.exports = router
