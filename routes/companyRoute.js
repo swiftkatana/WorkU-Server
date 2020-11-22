@@ -177,7 +177,7 @@ router.post('/readTaskUpdate', async (req, res) => {
 });
 
 router.post('/createcompany', async (req, res) => {
-    let { companyName, email } = req.body;
+    const { companyName, email } = req.body;
     let joinCode = Math.floor(Math.random() * (999999 - 100000) + 100000) + companyName[0] + "#" + companyName;
     let newCompany = new Company({
         name: companyName,
