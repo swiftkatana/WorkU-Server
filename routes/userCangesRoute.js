@@ -90,7 +90,7 @@ router.post("/login", (req, res) => {
 });
 
 router.post("/register", async (req, res) => {
-    const { email, password, firstName, lastName, phone } = req.body;
+    const { email, password, firstName, lastName, phone,expoId } = req.body;
     if (!email || !password || !firstName || !lastName, !phone) {
         loger('miss info been send to the register api');
 
@@ -115,7 +115,9 @@ router.post("/register", async (req, res) => {
             email,
             password: hash,
             firstName,
-            lastName, phone
+            lastName,
+             phone,
+             expoId
         });
         {
             user.save((err) => {

@@ -21,7 +21,7 @@ const userSchema = new mongoose.Schema({
   },
   imageProfile: {
     type: String,
-    default: process.env.SERVER_IP + "images/defaultProfile.png",
+    default: process.env.SERVER_IP + "/images/defaultProfile.png",
   },
   company: {
     type: String,

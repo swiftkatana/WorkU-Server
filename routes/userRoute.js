@@ -40,10 +40,8 @@ router.post("/joincompany", async (req, res) => {
   updateCompany.employees[updateUser.email] = { imageProfile: updateUser.imageProfile, phone: updateUser.phone, email: updateUser.email, fullName: updateUser.firstName + " " + updateUser.lastName, firstName: updateUser.firstName, lastName: updateUser.lastName, expoId: updateUser.expoId };
   updateCompany.markModified('employees')
   updateUser.company = updateCompany.name;
-  console.log(updateCompany.manager.email)
   updateUser.managerEmail = updateCompany.manager.email;
 
-  console.log(updateUser)
   updateCompany.save(err => {
     if (err) {
       loger('error4')
