@@ -70,8 +70,6 @@ io.on("connect", (socket) => {
           socket.email = data;
           console.log("User logged:", data);
         } else {
-          socket.emit("test" + data, "test");
-
           //save user socket on the server
           users[data] = socket;
           socket.email = data;
@@ -88,22 +86,29 @@ io.on("connect", (socket) => {
       case "updateTaskVoice":
         console.log("updateTaskVoice", to);
         console.log("audio ", data);
-        socket.emit("updateTaskVoice" + to, data);
+        io.emit("updateTaskVoice" + to, data);
         break;
       case "newTaskSend":
-        socket.emit("newTaskGot" + to, data);
+        io.emit("newTaskGot" + to, data);
         break;
       case "updateOrNewPersonalRequest":
         console.log("new personalRequest received");
         console.log("updateOrNewPersonalRequest" + to);
-        socket.emit("updateOrNewPersonalRequest" + to, data);
+        io.emit("updateOrNewPersonalRequest" + to, data);
         break;
 
       case "taskStatusChange":
         console.log("new taskStatusChange received");
-        socket.emit("updateTaskStatusChange" + to, data);
+        io.emit("taskStatusChange" + to, data);
         break;
-
+      case "employeeSendShift":
+        data.email = socket.email;
+        io.emit("managerGotShift" + to, data);
+        break;
+      case "managerSendFinalShift":
+        console.log("managerSendFinalShift received", to);
+        io.emit("employeeGotFinalShift" + to, data);
+        break;
       default:
         console.log("default case:", { type, data, to });
         break;
