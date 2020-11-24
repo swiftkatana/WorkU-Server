@@ -45,6 +45,18 @@ router.post("/sendshiftsforemployee", async (req, res) => {
     res.send(company);
     return;
   }
+  if (user.shifts.length >= 2) {
+    user.shifts.shift();
+  }
+  user.shifts.push(shift);
+  user.markModified("shifts");
+  user.save((err) => {
+    if (err) {
+      res.send(responedList.FaildSave);
+      return;
+    }
+  });
+
   if (company.shifts.length >= 2) {
     company.shifts.shift();
   }
@@ -105,7 +117,10 @@ router.post("/uploadaudio", (req, res) => {
       res.send(company);
       return;
     }
-
+    if (!company.tasks.processing[_id]) {
+      res.send({ err: "taskRemove" });
+      return;
+    }
     let updateTask = { ...company.tasks.processing[_id] };
 
     if (!updateTask) {

@@ -238,6 +238,13 @@ router.post("/updatetask", async (req, res) => {
   comment ? updateTask.comments.push(comment) : null;
 
   if (complete) {
+    if (
+      !user.tasks.processing[updateTask._id] &&
+      user.tasks.completed[updateTask._id]
+    ) {
+      res.send(user.tasks.completed[updateTask._id]);
+      return;
+    }
     delete user.tasks.processing[updateTask._id];
     delete company.tasks.processing[updateTask._id];
     user.tasks.completed[updateTask._id] = updateTask;

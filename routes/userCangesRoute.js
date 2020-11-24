@@ -28,6 +28,11 @@ router.post("/login", (req, res) => {
     loger("miss info been send to the login api", responedList.infoInvalid);
     return;
   }
+  // console.log(req.users);
+  // if (req.users[email]) {
+  //   res.send(responedList.loginFaildAlreadyConnect);
+  //   return;
+  // }
   User.findOne({ email: email })
     .catch((err) => {
       loger(err);
