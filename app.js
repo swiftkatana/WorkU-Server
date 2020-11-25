@@ -103,6 +103,9 @@ io.on("connect", (socket) => {
       case "managerSendFinalShift":
         io.emit("employeeGotFinalShift" + to, data);
         break;
+      case "joinCompany":
+        io.emit("newEmployee" + to, data);
+        break;
       default:
         console.log("default case:", { type, data, to });
         break;
