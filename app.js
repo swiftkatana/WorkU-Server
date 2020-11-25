@@ -98,6 +98,7 @@ io.on("connect", (socket) => {
         break;
       case "employeeSendShift":
         data.email = socket.email;
+        console.log(data);
         io.emit("managerGotShift" + to, data);
         break;
       case "managerSendFinalShift":
