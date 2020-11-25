@@ -25,30 +25,23 @@ router.post("/login", (req, res) => {
   const { email, password, expoId } = req.body;
   if (!email || !password) {
     res.send(responedList.infoInvalid);
-    loger("miss info been send to the login api", responedList.infoInvalid);
+
     return;
   }
-  // console.log(req.users);
-  // if (req.users[email]) {
-  //   res.send(responedList.loginFaildAlreadyConnect);
-  //   return;
-  // }
+
   User.findOne({ email: email })
     .catch((err) => {
-      loger(err);
-
       res.send(responedList.DBError);
       return;
     })
     .then((user) => {
       if (!user) {
         res.send(responedList.usersNotFound);
-        loger("cant find user on login " + email);
+
         return;
       }
       bcrypt.compare(password, user.password, async (err, login) => {
         if (err) {
-          loger("password not right\n" + err);
           res.send(responedList.infoInvalid);
           return;
         } else {
@@ -75,14 +68,10 @@ router.post("/login", (req, res) => {
                 }
               });
             }
-            loger("someone login to our web sucssesfull email: " + email);
+
             res.send(user.filterUser());
             return;
           } else {
-            loger(
-              req.ip + " just try login but not! password not good  :  " + email
-            );
-
             res.send(responedList.infoInvalid);
             return;
           }
@@ -94,8 +83,6 @@ router.post("/login", (req, res) => {
 router.post("/register", async (req, res) => {
   const { email, password, firstName, lastName, phone, expoId } = req.body;
   if ((!email || !password || !firstName || !lastName, !phone)) {
-    loger("miss info been send to the register api");
-
     res.send(responedList.infoInvalid);
     return;
   }
@@ -109,7 +96,6 @@ router.post("/register", async (req, res) => {
   }
   bcrypt.hash(password, saltPassword, async (err, hash) => {
     if (err) {
-      loger("err on register" + err);
       res.send(responedList.FaildSave);
       return;
     }
@@ -129,10 +115,9 @@ router.post("/register", async (req, res) => {
               ? responedList.UserIsAlreadyCreated
               : responedList.FaildSave
           );
-          loger("someone try to register but got error : " + err);
+
           return;
         } else {
-          loger("someone register to our web now this email : " + email);
           res.send(user.filterUser());
         }
       });
@@ -158,23 +143,16 @@ router.post("/changepassword", async (req, res) => {
 
   bcrypt.compare(oldPassword, user.password, (err, login) => {
     if (err) {
-      loger("password not right\n" + err);
       res.send(responedList.infoInvalid);
       return;
     } else {
       if (!login) {
-        loger(
-          req.ip +
-            " just try change password but not! password not good  :  " +
-            email
-        );
         res.send(responedList.infoInvalid);
         return;
       }
 
       bcrypt.hash(newPassword, saltPassword, (err, hash) => {
         if (err) {
-          loger("err on change password" + err);
           res.send(responedList.infoInvalid);
           return;
         }
@@ -183,10 +161,9 @@ router.post("/changepassword", async (req, res) => {
         user.save((err) => {
           if (err) {
             res.send(responedList.FaildSave);
-            loger("someone try to change password but got error : " + err);
+
             return;
           } else {
-            loger("someone change  is password now this email : " + email);
             res.send("good");
           }
         });
@@ -261,7 +238,6 @@ router.post("/createrestpasswordcode", async (req, res) => {
   user.save((err) => {
     if (err) {
       res.send(responedList.FaildSave);
-      looger(err);
     } else {
       ejs.renderFile(
         path.join(__dirname, "../src/restPassword.ejs"),

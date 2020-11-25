@@ -84,21 +84,16 @@ io.on("connect", (socket) => {
         }
         break;
       case "updateTaskVoice":
-        console.log("updateTaskVoice", to);
-        console.log("audio ", data);
         io.emit("updateTaskVoice" + to, data);
         break;
       case "newTaskSend":
         io.emit("newTaskGot" + to, data);
         break;
       case "updateOrNewPersonalRequest":
-        console.log("new personalRequest received");
-        console.log("updateOrNewPersonalRequest" + to);
         io.emit("updateOrNewPersonalRequest" + to, data);
         break;
 
       case "taskStatusChange":
-        console.log("new taskStatusChange received");
         io.emit("taskStatusChange" + to, data);
         break;
       case "employeeSendShift":
@@ -106,7 +101,6 @@ io.on("connect", (socket) => {
         io.emit("managerGotShift" + to, data);
         break;
       case "managerSendFinalShift":
-        console.log("managerSendFinalShift received", to);
         io.emit("employeeGotFinalShift" + to, data);
         break;
       default:
